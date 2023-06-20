@@ -11,4 +11,4 @@
         dest: /home/avm/Projects/
         owner: avm
         group: avm
-        mode: "0644"
+        mode: "u=rwx,g=rx,o=x"

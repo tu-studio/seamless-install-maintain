@@ -5,11 +5,11 @@ render_02 ansible_user=avm ansible_host=172.25.18.202
 render_03 ansible_user=avm ansible_host=172.25.18.203
 
 [hufo_screens]
-video_01 ansible_user=avm ansible_host=3910-PC-01
-video_02 ansible_user=avm ansible_host=3910-PC-02
-video_03 ansible_user=avm ansible_host=3910-PC-03
-video_04 ansible_user=avm ansible_host=3910-PC-04
-video_05 ansible_user=avm ansible_host=3910-PC-05
-video_06 ansible_user=avm ansible_host=3910-PC-06
-tafel_01 ansible_user=avm ansible_host=3910-PC-07
-tafel_02 ansible_user=avm ansible_host=3910-PC-08
+video_01 ansible_user=root ansible_host=3910-PC-01
+video_02 ansible_user=root ansible_host=3910-PC-02
+video_03 ansible_user=root ansible_host=3910-PC-03
+video_04 ansible_user=root ansible_host=3910-PC-04
+video_05 ansible_user=root ansible_host=3910-PC-05
+video_06 ansible_user=root ansible_host=3910-PC-06
+tafel_01 ansible_user=root ansible_host=3910-PC-07
+tafel_02 ansible_user=root ansible_host=3910-PC-08
