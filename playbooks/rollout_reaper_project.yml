@@ -1,0 +1,14 @@
+---
+- name: Roll out new project
+  hosts: playstation
+  gather_facts: false
+  vars:
+    project_source: /Users/humboldt-forum/hufo_show_projects/
+  tasks:
+    - name: "Copy Files onto the server"
+      copy:
+        src: "{{ project_source }}"
+        dest: /home/avm/Projects/
+        owner: avm
+        group: avm
+        mode: "0644"
