@@ -4,12 +4,14 @@ render_01 ansible_user=avm ansible_host=172.25.18.201
 render_02 ansible_user=avm ansible_host=172.25.18.202
 render_03 ansible_user=avm ansible_host=172.25.18.203
 
-[hufo_screens]
-video_01 ansible_user=root ansible_host=3910-PC-01
-video_02 ansible_user=root ansible_host=3910-PC-02
-video_03 ansible_user=root ansible_host=3910-PC-03
-video_04 ansible_user=root ansible_host=3910-PC-04
-video_05 ansible_user=root ansible_host=3910-PC-05
-video_06 ansible_user=root ansible_host=3910-PC-06
-tafel_01 ansible_user=root ansible_host=3910-PC-07
-tafel_02 ansible_user=root ansible_host=3910-PC-08
+[hufo_video]
+video_01 ansible_user=root ansible_host=172.25.18.171
+video_02 ansible_user=root ansible_host=172.25.18.172
+video_03 ansible_user=root ansible_host=172.25.18.173
+video_04 ansible_user=root ansible_host=172.25.18.174
+video_05 ansible_user=root ansible_host=172.25.18.175
+video_06 ansible_user=root ansible_host=172.25.18.176
+
+[hufo_info]
+tafel_01 ansible_user=root ansible_host=172.25.18.177
+tafel_02 ansible_user=root ansible_host=172.25.18.178

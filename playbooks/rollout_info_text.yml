@@ -1,0 +1,45 @@
+---
+- name: Roll out new project
+  hosts: hufo_info
+  gather_facts: false
+  vars:
+    project_source: /home/leto/ak/hufo_videos/
+  tasks:
+    - name: Mount Data directory
+      ansible.builtin.shell:
+        cmd: cardmount rw
+
+    # - name: "Copy Metamorphosis onto the server"
+    #   copy:
+    #     src: "{{ project_source }}pune_metamorphosis/Pune_Metamorphosis_HF-0{{ inventory_hostname[-1] }}.mp4"
+    #     dest: /mnt/data/
+    #     owner: root
+    #     group: root
+    #     mode: "u=rwx,g=rx,o=rx"
+
+    - name: "Copy Wasserwelten onto the server"
+      copy:
+        src: "{{ project_source }}/Wasserwelten/info11.mp4"
+        dest: /mnt/data/info_wasser.mp4
+        owner: root
+        group: root
+        mode: "u=rwx,g=rx,o=rx"
+
+    - name: "Copy Sculputral Beatings onto the server"
+      copy:
+        src: "{{ project_source }}/sculptural_beatings/info10.mp4"
+        dest: /mnt/data/info_sculptur.mp4
+        owner: root
+        group: root
+        mode: "u=rwx,g=rx,o=rx"
+
+    - name: "Copy playlist.txt"
+      ansible.builtin.template:
+        src: playlist_info.txt.j2
+        dest: /mnt/data/playlist.txt
+        owner: root
+        group: root
+        mode: "u=rwx,g=rx,o=rx"
+
+    - name: Reboot
+      ansible.builtin.reboot:
