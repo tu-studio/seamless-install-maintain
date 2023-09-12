@@ -1,0 +1,40 @@
+---
+- name: host local seamless git
+  hosts: localhost
+  gather_facts: false
+  vars:
+    seamless_source_repo: /home/leto/ak/seamless
+  tasks:
+    - name: Host local Seamless Git Repo
+      ansible.builtin.shell:
+        chdir: "{{ seamless_source_repo }}"
+        cmd: git daemon --reuseaddr --base-path=. --export-all --verbose
+      async: 2000000
+      poll: 0
+- name: update seamless
+  hosts: playstation
+  gather_facts: false
+  vars:
+    seamless_source_ip: "172.25.18.240"
+    branch: new_scheduling
+    remote_dir: /home/avm/seamless
+  tasks:
+    - name: Pull from local PC
+      ansible.builtin.shell:
+        cmd: git pull git://{{ seamless_source_ip }}/
+        chdir: "{{ remote_dir }}"
+    # - name: Checkout correct branch
+    #   ansible.builtin.shell:
+    #     cmd: git checkout {{ branch }}
+    #     chdir: "{{ remote_dir }}"
+    - name: install changes
+      ansible.builtin.shell:
+        cmd: sudo meson install
+        chdir: "{{ remote_dir }}/builddir"
+      become: true
+    - name: restart showcontrol
+      ansible.builtin.systemd:
+        name: showcontrol
+        scope: user
+        state: restarted
+

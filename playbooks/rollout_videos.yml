@@ -9,29 +9,35 @@
       ansible.builtin.shell:
         cmd: cardmount rw
 
-    - name: "Copy Metamorphosis onto the server"
+    # - name: "Copy Metamorphosis onto the server"
+    #   copy:
+    #     src: "{{ project_source }}pune_metamorphosis/Pune_Metamorphosis_HF-0{{ inventory_hostname[-1] }}.mp4"
+    #     dest: /mnt/data/
+    #     owner: root
+    #     group: root
+    #     mode: "u=rwx,g=rx,o=rx"
+    - name: "Copy Transformation onto the server"
       copy:
-        src: "{{ project_source }}pune_metamorphosis/Pune_Metamorphosis_HF-0{{ inventory_hostname[-1] }}.mp4"
+        src: "{{ project_source }}transformation/0{{ inventory_hostname[-1] }}-Transformations-Fehr.mp4"
         dest: /mnt/data/
         owner: root
         group: root
         mode: "u=rwx,g=rx,o=rx"
+    # - name: "Copy Wasserwelten onto the server"
+    #   copy:
+    #     src: "{{ project_source }}/Wasserwelten/wasser_{{ inventory_hostname[-1] }}.mov"
+    #     dest: /mnt/data/
+    #     owner: root
+    #     group: root
+    #     mode: "u=rwx,g=rx,o=rx"
 
-    - name: "Copy Wasserwelten onto the server"
-      copy:
-        src: "{{ project_source }}/Wasserwelten/wasser_{{ inventory_hostname[-1] }}.mov"
-        dest: /mnt/data/
-        owner: root
-        group: root
-        mode: "u=rwx,g=rx,o=rx"
-
-    - name: "Copy Sculputral Beatings onto the server"
-      copy:
-        src: "{{ project_source }}/sculptural_beatings/sculptur_{{ inventory_hostname[-1] }}.mov"
-        dest: /mnt/data/
-        owner: root
-        group: root
-        mode: "u=rwx,g=rx,o=rx"
+    # - name: "Copy Sculputral Beatings onto the server"
+    #   copy:
+    #     src: "{{ project_source }}/sculptural_beatings/sculptur_{{ inventory_hostname[-1] }}.mov"
+    #     dest: /mnt/data/
+    #     owner: root
+    #     group: root
+    #     mode: "u=rwx,g=rx,o=rx"
 
     - name: "Copy playlist.txt"
       ansible.builtin.template:
@@ -42,8 +48,6 @@
         mode: "u=rwx,g=rx,o=rx"
       vars:
         video_id: "{{ inventory_hostname[-1] }}"
-        video_id_reverse: "{{ 7 - (inventory_hostname[-1] | int) }}"
-
     - name: Reboot
       ansible.builtin.reboot:
 

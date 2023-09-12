@@ -17,18 +17,18 @@
     #     group: root
     #     mode: "u=rwx,g=rx,o=rx"
 
-    - name: "Copy Wasserwelten onto the server"
+    - name: "Copy Pune onto the server"
       copy:
-        src: "{{ project_source }}/Wasserwelten/info11.mp4"
-        dest: /mnt/data/info_wasser.mp4
+        src: "{{ project_source }}/pune_metamorphosis/info12.mp4"
+        dest: /mnt/data/info_pune.mp4
         owner: root
         group: root
         mode: "u=rwx,g=rx,o=rx"
 
-    - name: "Copy Sculputral Beatings onto the server"
+    - name: "Copy Wasserwelten onto the server"
       copy:
-        src: "{{ project_source }}/sculptural_beatings/info10.mp4"
-        dest: /mnt/data/info_sculptur.mp4
+        src: "{{ project_source }}/Wasserwelten/info11.mp4"
+        dest: /mnt/data/info_wasser.mp4
         owner: root
         group: root
         mode: "u=rwx,g=rx,o=rx"
