@@ -1,0 +1,32 @@
+// Server.supernova;
+Server.scsynth;
+//
+// Name of the jack client
+s.options.device               = "{{ client_name }}";
+//
+s.options.numInputBusChannels  = 0;
+s.options.numOutputBusChannels = {{ n_channels }};
+//
+s.options.numAudioBusChannels  = 4096;
+//
+s.options.memSize = 65536;
+//s.boot;
+s.waitForBoot({
+
+	Routine({
+
+for (0, {{ n_channels - 1 }}, {arg i;
+    Pipe.new("jack_connect {{ client_name }}:out_" ++ i ++ " system:playback_" ++ i, "w")
+    });
+for (0, {{ n_channels - 1 }}, {arg i;
+
+		{
+			var gain = Env.perc(0.01,{{ length_noise }});
+				Out.ar(i, EnvGen.ar(gain,1, doneAction:2) * WhiteNoise.ar(0.1));
+			}.play;
+
+			{{ length_noise }}.sleep();
+	});
+	}).play;
+
+});

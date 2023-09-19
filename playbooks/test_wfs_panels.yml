@@ -1,0 +1,24 @@
+---
+- name: Run WFS Panel Test
+  hosts: render_02
+  gather_facts: false
+  vars:
+    client_name: TEST
+    n_channels: 128
+    length_noise: 0.1
+  tasks:
+    # - name: Start Test Client
+    - name: Template out SC script
+      ansible.builtin.template:
+        src: wfs_tester.scd.j2
+        dest: /home/avm/hufo_wfs_panel_test.scd
+        owner: avm
+        group: avm
+        mode: u=rw,g=rw,o=r
+
+    - name: "Launch SC!"
+      async: 2592000 # run for 1 month
+      poll: 0
+      shell: sclang hufo_wfs_panel_test.scd >> sc_panel_test.log
+      args:
+        chdir: /home/avm/
