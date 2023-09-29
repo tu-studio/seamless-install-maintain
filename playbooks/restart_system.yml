@@ -1,0 +1,32 @@
+---
+- name: Reboot Render 1
+  hosts: render_01
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Reboot
+      ansible.builtin.reboot:
+    - name: Wait
+      ansible.builtin.wait_for:
+        timeout: 60
+- name: Reboot Render 2+3
+  hosts: [render_02, render_03]
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Reboot
+      ansible.builtin.reboot:
+    - name: Wait
+      ansible.builtin.wait_for:
+        timeout: 30
+
+    - name: Get running jack clients
+      ansible.builtin.shell: jack_lsp
+      register: jack_clients
+
+    - name: Restart twonder if necessary
+      ansible.builtin.systemd:
+        service: twonder
+        scope: user
+        state: restarted
+      when: jack_clients.stdout.find("twonder") == -1
