@@ -15,3 +15,6 @@ video_06 ansible_user=root ansible_host=172.25.18.176
 [hufo_info]
 tafel_01 ansible_user=root ansible_host=172.25.18.177
 tafel_02 ansible_user=root ansible_host=172.25.18.178
+
+[studio_pc]
+newmark ansible_user=studio ansible_host=newmark.ak.tu-berlin.de

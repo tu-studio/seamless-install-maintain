@@ -1,0 +1,54 @@
+---
+- name: Setup twonder connections
+  hosts: newmark
+  gather_facts: false
+  vars:
+    n_inputs: 32
+    n_twonder: 8
+    n_twonder_outs: 16
+    connections: []
+  
+  tasks:
+    - name: Build Connections to Audio Matrix 
+      ansible.builtin.set_fact:
+        connections: "{{ connections + [connect_command] }}"
+      loop: "{{ range(1, n_inputs + 1) }}"
+      vars:
+        connect_command: "jack_connect system:capture_{{ item }} seamless_audio_matrix:input_{{ item - 1 }}"
+      delegate_to: localhost
+
+    - name: Build Connections to twonder
+      ansible.builtin.set_fact:
+        connections: "{{ connections + [connect_command] }}"
+      loop: "{{ range(1, n_twonder + 1) | product(range(1, n_inputs + 1)) }}"
+      vars:
+        connect_command: "jack_connect seamless_audio_matrix:wfs_{{ item[1] - 1 }} twonder{{ item[0] }}:input{{ item[1] }}"
+      delegate_to: localhost
+
+    - name: Build Connections to outputs
+      ansible.builtin.set_fact:
+        connections: "{{ connections + [connect_command] }}"
+      loop: "{{ range(1, n_twonder + 1) | product(range(1, n_twonder_outs + 1)) }}"
+      loop_control:
+        index_var: loop_index
+      vars:
+        playback_index: "{{ item[1] + ((item[0] - 1) * n_twonder_outs) }}"
+        connect_command: "jack_connect twonder{{ item[0] }}:speaker{{ item[1] }} system:playback_{{ playback_index }}"
+      delegate_to: localhost
+
+    - name: print
+      ansible.builtin.shell: "{{ connections | join(';') }}"
+
+    # - name: Connect ins to twonder
+    #   ansible.builtin.shell: |
+    #     jack_connect system:capture_{{ item[1] }} twonder{{ item[0] }}:input{{ item[1] }}
+    #   loop: "{{ range(1, n_twonder + 1) | product(range(1, n_inputs + 1)) }}"
+
+    # - name: Connect twonder outs to system outs
+    #   ansible.builtin.shell: |
+    #     jack_connect twonder{{ item[0] }}:speaker{{ item[1] }} system:playback_{{ playback_index }}
+    #   loop: "{{ range(1, n_twonder + 1) | product(range(1, n_twonder_outs + 1)) }}"
+    #   loop_control:
+    #     index_var: loop_index
+    #   vars:
+    #     playback_index: "{{ item[1] + ((item[0] - 1) * n_twonder_outs) }}"
