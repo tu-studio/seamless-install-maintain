@@ -1,0 +1,32 @@
+---
+- name: Install jack
+  hosts: all
+  tasks:
+    - name: Install jack
+      become: true
+      ansible.builtin.apt:
+        name:
+          - jackd2
+          - qjackctl
+    - name: Get stats for the file
+      ansible.builtin.stat:
+        path: /etc/security/limits.d/audio.conf
+      register: file_exists
+    - name: Activate realtime priority for audio group
+      become: true
+      ansible.builtin.copy:
+        remote_src: true
+        src: /etc/security/limits.d/audio.conf.disabled
+        dest: /etc/security/limits.d/audio.conf
+      when: not file_exists.stat.exists
+    - name: Delete the disabled permissions file
+      become: true
+      ansible.builtin.file:
+        path: /etc/security/limits.d/audio.conf.disabled
+        state: absent
+    - name: Add user to audio group
+      become: true
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        groups: audio
+        append: yes
