@@ -1,0 +1,53 @@
+---
+- name: Install jack-connection-manager
+  hosts: all
+  vars:
+    install_dir: /home/{{ ansible_user_id }}/jack-connection-manager
+  vars_files:
+    - ../vars/vault.yml
+  tasks:
+    - ansible.builtin.debug:
+        var: ansible_become_pass
+    - name: Install Dependencies
+      ansible.builtin.apt:
+        name:
+          - python3-pip
+          - python3-venv
+          - meson
+        state: present
+      become: true
+
+    - name: Clone Repo
+      ansible.builtin.git:
+        repo: git@github.com:tu-studio/jack-connection-manager.git
+        dest: "{{ install_dir }}"
+        single_branch: yes
+        version: main
+        update: yes
+
+    - name: Remove Meson Build dir
+      ansible.builtin.file:
+        state: absent
+        path: "{{ install_dir }}/build"
+
+    - name: Meson Setup
+      ansible.builtin.command:
+        cmd: meson setup -Dversioned_install=true build
+        chdir: "{{ install_dir }}"
+
+    - name: Meson Install
+      ansible.builtin.command:
+        cmd: meson install -C build
+        chdir: "{{ install_dir }}"
+      become: true
+      
+    - name: systemd daemon reload
+      ansible.builtin.systemd:
+        daemon_reload: true
+        scope: user
+    - name: systemd enable service
+      ansible.builtin.systemd:
+        service: jack-connection-manager.service
+        enabled: true
+        scope: user
+        masked: false
