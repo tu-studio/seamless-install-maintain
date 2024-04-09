@@ -1,0 +1,33 @@
+---
+# - name: Full System upgrade (?)
+#   ansible.builtin.import_playbook: upgrade_system.yml
+
+- name: Install Sudo
+  ansible.builtin.import_playbook: install_sudo.yml
+
+# - name: Add key to github account
+#   ansible.builtin.import_playbook: setup_ssh_key.yml
+
+# - name: Install basic software (git, cmake, pkg-config tree build-essential libjack-jackd2-dev liblo-dev)
+#   ansible.builtin.import_playbook: install_dependencies.yml
+
+# - name: Setup zsh
+#   ansible.builtin.import_playbook: install_zsh.yml
+
+# - name: Install seamless configs
+#   ansible.builtin.import_playbook: install_config.yml
+
+# - name: Install jackd
+#   ansible.builtin.import_playbook: install_jack.yml
+
+# - name: Install audio-matrix
+#   ansible.builtin.import_playbook: install_audio-matrix.yml
+
+# - name: Install osc-kreuz
+#   ansible.builtin.import_playbook: install_osc-kreuz.yml
+
+- name: Install jack-connection-manager
+  ansible.builtin.import_playbook: install_jack-connection-manager.yml
+# split cwonder/twonder?
+# - name: Install wonder
+#   ansible.builtin.import_playbook: install_wonder.yml
