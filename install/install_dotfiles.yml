@@ -1,0 +1,29 @@
+---
+- name: Install dotfiles and convenience tools
+  hosts: all
+  tasks:
+    - name: Install dependencies
+      become: yes
+      apt:
+        name:
+          - git
+          - stow
+          - zsh
+          - stow
+          - neovim
+          - tree
+    - name: Clone git repository
+      git:
+        repo: git@github.com:tu-studio/.dotfiles.git
+        dest: /home/{{ ansible_user }}/.dotfiles
+        recursive: yes
+    - name: Install dotfiles
+      command: stow -t /home/{{ ansible_user }} -d /home/{{ ansible_user }}/.dotfiles {{ item }}
+      with_items:
+        - zsh
+    - name: Set zsh as default shell
+      become: yes
+      user:
+        name: "{{ ansible_user }}"
+        shell: /bin/zsh
+    
