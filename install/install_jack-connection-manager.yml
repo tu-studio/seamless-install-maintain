@@ -7,7 +7,7 @@
     - ../vars/vault.yml
   tasks:
     - ansible.builtin.debug:
-        var: ansible_become_pass
+        var: vault['ansible_become_pass']
     - name: Install Dependencies
       ansible.builtin.apt:
         name:
