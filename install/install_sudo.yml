@@ -1,0 +1,14 @@
+---
+- name: Install sudo
+  hosts: all
+  become_method: su
+  become: yes
+  tasks:
+    - name: Install sudo
+      apt:
+        name: sudo
+    - name: Add user to sudo group
+      user:
+        name: "{{ ansible_user }}"
+        groups: sudo
+        append: yes
