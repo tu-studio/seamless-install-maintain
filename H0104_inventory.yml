@@ -3,3 +3,4 @@ renderer:
     kaoru01:
       ansible_host: 130.149.23.230
       ansible_user: tu-studio
+      services: [osc-kreuz, cwonder]

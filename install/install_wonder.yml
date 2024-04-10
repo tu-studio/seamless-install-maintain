@@ -1,0 +1,80 @@
+---
+- name: Install Wonder
+  hosts: all
+  vars:
+    repo_dir: /home/{{ ansible_user_id }}/wonder
+    twonder_service_name: twonder
+    cwonder_service_name: cwonder
+    ansible_become_pass: "{{ vault['ansible_become_pass'] }}"
+    host_has_twonder: "{{ (services is defined and twonder_service_name in services )}}"
+    host_has_cwonder: "{{ (services is defined and cwonder_service_name in services )}}"
+  vars_files:
+    - ../vars/vault.yml
+  tasks:
+    - name: Only install twonder or cwonder on devices that are concerned
+      ansible.builtin.meta: end_host
+      when: not host_has_twonder and not host_has_cwonder
+    - name: Install Dependencies
+      ansible.builtin.apt:
+        name:
+          - meson
+          - libxml2-dev
+          - libsystemd-dev
+          - libglibmm-2.4-dev
+          - libjack-jackd2-dev
+          - liblo-dev
+        state: present
+      become: true
+
+    - name: Clone Repo
+      ansible.builtin.git:
+        repo: git@github.com:tu-studio/wonder.git
+        dest: "{{ repo_dir }}"
+        single_branch: true
+        version: main
+        update: true
+
+    - name: Remove Meson Build dir
+      ansible.builtin.file:
+        state: absent
+        path: "{{ repo_dir }}/build"
+
+    - name: Meson Setup
+      ansible.builtin.command:
+        cmd: meson setup build --buildtype release -Dversioned_install=true {{ cwonder_arg }} {{ twonder_arg }}
+        chdir: "{{ repo_dir }}"
+      vars:
+        cwonder_arg: "-Dcwonder={{ host_has_cwonder | lower }}"
+        twonder_arg: "-Dtwonder={{ host_has_twonder | lower }}"
+
+    - name: Compile Meson
+      ansible.builtin.command:
+        cmd: meson compile -C build
+        chdir: "{{ repo_dir }}"
+
+    - name: Meson Install
+      ansible.builtin.command:
+        cmd: meson install -C build
+        chdir: "{{ repo_dir }}"
+      become: true
+
+    - name: Systemd daemon reload
+      ansible.builtin.systemd:
+        daemon_reload: true
+        scope: user
+
+    - name: Systemd enable cwonder service
+      ansible.builtin.systemd:
+        service: cwonder.service
+        enabled: true
+        scope: user
+        masked: false
+      when: host_has_cwonder
+
+    - name: Systemd enable twonder service
+      ansible.builtin.systemd:
+        service: twonder.service
+        enabled: true
+        scope: user
+        masked: false
+      when: host_has_twonder

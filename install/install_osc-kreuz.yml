@@ -1,13 +1,18 @@
 ---
-- name: Install jack-connection-manager
+- name: Install osc-kreuz
   hosts: all
   vars:
-    repo_dir: /home/{{ ansible_user_id }}/jack-connection-manager
+    repo_dir: /home/{{ ansible_user_id }}/osc-kreuz
+    service_name: osc-kreuz
     ansible_become_pass: "{{ vault['ansible_become_pass'] }}"
-
   vars_files:
     - ../vars/vault.yml
   tasks:
+
+    - name: Only install osc-kreuz on devices that are concerned
+      ansible.builtin.meta: end_host
+      when: not (services is defined) or (service_name not in services)
+
     - name: Install Dependencies
       ansible.builtin.apt:
         name:
@@ -19,7 +24,7 @@
 
     - name: Clone Repo
       ansible.builtin.git:
-        repo: git@github.com:tu-studio/jack-connection-manager.git
+        repo: git@github.com:tu-studio/osc-kreuz.git
         dest: "{{ repo_dir }}"
         single_branch: true
         version: main
@@ -47,7 +52,7 @@
         scope: user
     - name: Systemd enable service
       ansible.builtin.systemd:
-        service: jack-connection-manager.service
+        service: osc-kreuz.service
         enabled: true
         scope: user
         masked: false
