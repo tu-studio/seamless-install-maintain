@@ -4,8 +4,8 @@
   vars:
     repo_dir: /home/{{ ansible_user_id }}/osc-kreuz
     service_name: osc-kreuz
-    ansible_become_pass: "{{ vault['ansible_become_pass'] }}"
   vars_files:
+    - ../vars/program_versions.yml
     - ../vars/vault.yml
   tasks:
 
@@ -26,8 +26,7 @@
       ansible.builtin.git:
         repo: git@github.com:tu-studio/osc-kreuz.git
         dest: "{{ repo_dir }}"
-        single_branch: true
-        version: main
+        version: "{{ osc_kreuz_version }}"
         update: true
 
     - name: Remove Meson Build dir

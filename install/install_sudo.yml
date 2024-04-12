@@ -3,6 +3,8 @@
   hosts: all
   become_method: su
   become: yes
+  vars_files:
+    - ../vars/vault.yml
   tasks:
     - name: Install sudo
       apt:

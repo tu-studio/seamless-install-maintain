@@ -5,10 +5,10 @@
     repo_dir: /home/{{ ansible_user_id }}/wonder
     twonder_service_name: twonder
     cwonder_service_name: cwonder
-    ansible_become_pass: "{{ vault['ansible_become_pass'] }}"
     host_has_twonder: "{{ (services is defined and twonder_service_name in services )}}"
     host_has_cwonder: "{{ (services is defined and cwonder_service_name in services )}}"
   vars_files:
+    - ../vars/program_versions.yml
     - ../vars/vault.yml
   tasks:
     - name: Only install twonder or cwonder on devices that are concerned
@@ -30,8 +30,7 @@
       ansible.builtin.git:
         repo: git@github.com:tu-studio/wonder.git
         dest: "{{ repo_dir }}"
-        single_branch: true
-        version: main
+        version: "{{ wonder_version }}"
         update: true
 
     - name: Remove Meson Build dir

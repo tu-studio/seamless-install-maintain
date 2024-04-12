@@ -3,4 +3,7 @@ renderer:
     kaoru01:
       ansible_host: 130.149.23.230
       ansible_user: tu-studio
-      services: [osc-kreuz, cwonder]
+      services:
+        [osc-kreuz, twonder, jack-connection-manager, twonder, audio-matrix]
+      location: H0104
+      audio_driver: madi

@@ -1,0 +1,11 @@
+---
+- name: Upgrade System
+  hosts: all
+  vars_files:
+    - ../vars/vault.yml
+  tasks:
+    - name: Upgrade
+      apt:
+        update_cache: true
+        upgrade: true
+      become: true

@@ -1,0 +1,32 @@
+---
+- name: Install Madi Drivers
+  hosts: all
+  vars:
+    repo_dir: /home/{{ ansible_user_id }}/madifx-driver
+  vars_files:
+    - ../vars/vault.yml
+  tasks:
+    - name: Only install madi drivers on devices that are concerned
+      ansible.builtin.meta: end_host
+      when:  not (audio_driver == "madi")
+
+    - name: Install Dependencies
+      ansible.builtin.apt:
+        name:
+          - linux-headers-{{ ansible_facts['kernel'] }}
+        state: present
+      become: true
+
+    - name: Clone Repo
+      ansible.builtin.git:
+        repo: git@github.com:tu-studio/madifx.git
+        dest: "{{ repo_dir }}"
+        single_branch: true
+        version: HDSPe_MADI_FX
+        update: true
+
+    - name: Make Install
+      community.general.make:
+        target: install
+        chdir: "{{ repo_dir }}"
+      become: true

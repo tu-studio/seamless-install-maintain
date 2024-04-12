@@ -1,6 +1,8 @@
 ---
 - name: Install dotfiles and convenience tools
   hosts: all
+  vars_files:
+    - ../vars/vault.yml
   tasks:
     - name: Install dependencies
       become: yes

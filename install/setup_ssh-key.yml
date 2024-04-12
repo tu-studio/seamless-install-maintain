@@ -10,11 +10,9 @@
     - name: Read SSH public key to authorize
       ansible.builtin.shell: cat ~/.ssh/id_rsa.pub
       register: ssh_pub_key
-    - debug:
-        msg: "ssh_pub_key: {{ ssh_pub_key.stdout }}"
     - name: Authorize key with GitHub
       delegate_to: localhost
       community.general.github_key:
         name: "{{ inventory_hostname }}"
-        token: "{{ vault['github_token'] }}"
+        token: "{{ github_token }}"
         pubkey: '{{ ssh_pub_key.stdout }}'

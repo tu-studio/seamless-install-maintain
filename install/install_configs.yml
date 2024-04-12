@@ -1,31 +1,24 @@
 ---
-- name: Install jack-connection-manager
+- name: Install configs
   hosts: all
   vars:
-    service_name: jack-connection-manager
-    repo_dir: /home/{{ ansible_user_id }}/jack-connection-manager
+    repo_dir: /home/{{ ansible_user_id }}/configs
   vars_files:
-    - ../vars/vault.yml
     - ../vars/program_versions.yml
+    - ../vars/vault.yml
   tasks:
-    - name: Only install jack-connection-manager on devices that are concerned
-      ansible.builtin.meta: end_host
-      when: not (services is defined) or (service_name not in services)
-
     - name: Install Dependencies
       ansible.builtin.apt:
         name:
-          - python3-pip
-          - python3-venv
           - meson
         state: present
       become: true
 
     - name: Clone Repo
       ansible.builtin.git:
-        repo: git@github.com:tu-studio/jack-connection-manager.git
+        repo: git@github.com:tu-studio/seamless-configs.git
         dest: "{{ repo_dir }}"
-        version: "{{ jack_connection_manager_version }}"
+        version: "{{ config_version }}"
         update: true
 
     - name: Remove Meson Build dir
@@ -35,7 +28,7 @@
 
     - name: Meson Setup
       ansible.builtin.command:
-        cmd: meson setup -Dversioned_install=true build
+        cmd: meson setup build --buildtype release -Dversioned_install=true -Dlocation={{ location }} -Dnode={{ inventory_hostname }}
         chdir: "{{ repo_dir }}"
 
     - name: Meson Install
@@ -50,7 +43,7 @@
         scope: user
     - name: Systemd enable service
       ansible.builtin.systemd:
-        service: jack-connection-manager.service
+        service: jack.service
         enabled: true
         scope: user
         masked: false

@@ -1,46 +1,48 @@
 ---
-- name: Install jack-connection-manager
+- name: Install audio-matrix
   hosts: all
   vars:
-    service_name: jack-connection-manager
-    repo_dir: /home/{{ ansible_user_id }}/jack-connection-manager
+    service_name: audio-matrix
+    repo_dir: /home/{{ ansible_user_id }}/audio-matrix
   vars_files:
     - ../vars/vault.yml
     - ../vars/program_versions.yml
   tasks:
-    - name: Only install jack-connection-manager on devices that are concerned
+    - name: Only install audio-matrix on devices that are concerned
       ansible.builtin.meta: end_host
       when: not (services is defined) or (service_name not in services)
 
     - name: Install Dependencies
       ansible.builtin.apt:
         name:
-          - python3-pip
-          - python3-venv
-          - meson
+          - cmake
+          - build-essential
+          - libjack-jackd2-dev
+          - liblo-dev
         state: present
       become: true
 
     - name: Clone Repo
       ansible.builtin.git:
-        repo: git@github.com:tu-studio/jack-connection-manager.git
+        repo: git@github.com:tu-studio/audio-matrix.git
         dest: "{{ repo_dir }}"
-        version: "{{ jack_connection_manager_version }}"
+        version: "{{ audio_matrix_version }}"
         update: true
+      
 
-    - name: Remove Meson Build dir
-      ansible.builtin.file:
-        state: absent
-        path: "{{ repo_dir }}/build"
-
-    - name: Meson Setup
+    - name: Cmake configure build
       ansible.builtin.command:
-        cmd: meson setup -Dversioned_install=true build
+        cmd: cmake -B build -DCMAKE_BUILD_TYPE=Release -DVERSIONED_INSTALL=ON
         chdir: "{{ repo_dir }}"
 
-    - name: Meson Install
+    - name: Cmake build
       ansible.builtin.command:
-        cmd: meson install -C build
+        cmd: cmake --build build --config Release
+        chdir: "{{ repo_dir }}"
+
+    - name: Cmake install
+      ansible.builtin.command:
+        cmd: cmake --build build --config Release --target install
         chdir: "{{ repo_dir }}"
       become: true
 
@@ -48,9 +50,10 @@
       ansible.builtin.systemd:
         daemon_reload: true
         scope: user
+
     - name: Systemd enable service
       ansible.builtin.systemd:
-        service: jack-connection-manager.service
+        service: audio-matrix.service
         enabled: true
         scope: user
         masked: false
