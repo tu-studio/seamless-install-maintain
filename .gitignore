@@ -1,2 +1,4 @@
 *.retry
 ansible.cfg
+vault_pw
+test*
