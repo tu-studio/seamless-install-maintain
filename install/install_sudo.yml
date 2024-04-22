@@ -14,3 +14,6 @@
         name: "{{ ansible_user }}"
         groups: sudo
         append: yes
+
+    - name: reset ssh connection to allow user changes to affect 'current login user'
+      meta: reset_connection
