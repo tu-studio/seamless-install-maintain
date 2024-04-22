@@ -75,16 +75,16 @@
         path: "{{ item.mount_point }}"
       loop: "{{ subvolumes }}"
       register: origin_dir
-    # - name: debug
-    #   ansible.builtin.debug:
-    #     var: origin_dir
+    - name: debug
+      ansible.builtin.debug:
+        var: origin_dir
     # this might lead to problems with ssh keys
     - name: Move data
       ansible.builtin.shell:
         cmd: "mv {{ item.mount_point }}/* /mnt{{ item.mount_point }}/; mv {{ item.mount_point }} {{ item.mount_point }}.old"
       become: true
       loop: "{{ subvolumes }}"
-      when: origin_dir.results[index].stat == true and (ansible_mounts | selectattr('mount', 'equalto', item.mount_point) | list | length == 0) 
+      when: origin_dir.results[index].stat.exists == true and (ansible_mounts | selectattr('mount', 'equalto', item.mount_point) | list | length == 0) 
       loop_control:
         index_var: index
       throttle: 1
@@ -99,14 +99,14 @@
       loop: "{{ subvolumes }}"
       become: true
       
-    # - name: Delete old directory
-    #   ansible.builtin.file:
-    #     path: "{{ item.mount_point }}.old"
-    #     state: absent
-    #   loop: subvolumes
-    #   # only do this when the subvolume isn't mounted where it should go
-    #   when: ansible_mounts | selectattr('mount', 'equalto', item.mount_point) | list | length == 0
-    #   become: true
+    - name: Delete old directory
+      ansible.builtin.file:
+        path: "{{ item.mount_point }}.old"
+        state: absent
+      loop: "{{ subvolumes }}"
+      # only do this when the subvolume isn't mounted where it should go
+      when: ansible_mounts | selectattr('mount', 'equalto', item.mount_point) | list | length == 0
+      become: true
     
 
 
