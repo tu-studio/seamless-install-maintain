@@ -31,3 +31,6 @@
 
 - name: Install wonder
   ansible.builtin.import_playbook: install_wonder.yml
+
+- name: Reboot
+  ansible.builtin.import_playbook: reboot.yml
