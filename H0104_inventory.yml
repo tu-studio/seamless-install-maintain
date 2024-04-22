@@ -1,7 +1,7 @@
 renderer:
   hosts:
     kaoru01:
-      ansible_host: 130.149.23.230
+      ansible_host: 130.149.23.232
       ansible_user: tu-studio
       services:
         [osc-kreuz, twonder, jack-connection-manager, twonder, audio-matrix]

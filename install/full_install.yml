@@ -5,14 +5,8 @@
 - name: Install Sudo
   ansible.builtin.import_playbook: install_sudo.yml
 
-- name: Optimize mount options
-  ansible.builtin.import_playbook: setup_fstab.yml
-
 - name: Add key to github account
   ansible.builtin.import_playbook: setup_ssh-key.yml
-
-# - name: Install basic software (git, cmake, pkg-config tree build-essential libjack-jackd2-dev liblo-dev)
-#   ansible.builtin.import_playbook: install_dependencies.yml
 
 - name: Setup zsh/dotfiles
   ansible.builtin.import_playbook: install_dotfiles.yml
