@@ -7,14 +7,22 @@
     subvolumes:
       - name: "@home"
         mount_point: /home
+        mount_first: true
       - name: "@var/@cache"
         mount_point: /var/cache
+        mount_first: false
       - name: "@var/@log"
         mount_point: /var/log
+        mount_first: false
+
       - name: "@var"
         mount_point: /var
+        mount_first: true
+
       - name: "@snapshots"
         mount_point: /.snapshots
+        mount_first: true
+
     mount_options: defaults,noatime,nodiratime,ssd,compress=zstd:3,subvol=
   tasks:
     - name: Check existence of @rootfs subvolume
@@ -89,7 +97,7 @@
         index_var: index
       throttle: 1
 
-    - name: Mount Subvolume permanently
+    - name: Mount First batch of Subvolumes permanently
       ansible.posix.mount:
         fstype: btrfs
         path: "{{ item.mount_point }}"
@@ -97,8 +105,20 @@
         state: mounted
         opts: "{{ mount_options }}{{ item.name }}" 
       loop: "{{ subvolumes }}"
+      when: item.mount_first
       become: true
-      
+    
+    - name: Mount Second batch of Subvolumes permanently
+      ansible.posix.mount:
+        fstype: btrfs
+        path: "{{ item.mount_point }}"
+        src: UUID={{ fs_info.filesystem.uuid }}
+        state: mounted
+        opts: "{{ mount_options }}{{ item.name }}" 
+      loop: "{{ subvolumes }}"
+      when: not item.mount_first
+      become: true
+
     - name: Delete old directory
       ansible.builtin.file:
         path: "{{ item.mount_point }}.old"
