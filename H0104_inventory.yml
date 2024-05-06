@@ -12,3 +12,12 @@ renderer:
       services: [jack-connection-manager, twonder, audio-matrix]
       location: H0104
       audio_driver: madi
+
+player:
+  hosts:
+    tengo:
+      ansible_host: 130.149.23.230
+      ansible_user: tu-studio
+      services: [osc-kreuz, jack-connection-manager, cwonder, gui]
+      location: H0104
+      audio_driver: madi
