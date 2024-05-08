@@ -55,5 +55,6 @@
       ansible.builtin.systemd:
         service: audio-matrix.service
         enabled: true
+        state: restarted
         scope: user
         masked: false

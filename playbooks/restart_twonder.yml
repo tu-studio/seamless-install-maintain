@@ -1,0 +1,10 @@
+---
+- name: Reboot Render 1
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Restart twonder if necessary
+      ansible.builtin.systemd:
+        service: twonder
+        scope: user
+        state: restarted
