@@ -1,0 +1,10 @@
+---
+- name: Setup Lingering User
+  hosts: all
+  vars_files:
+    - ../vars/vault.yml
+  tasks:
+    - name: Enable Linger for User
+      ansible.builtin.command:
+        cmd: loginctl enable-linger {{ ansible_user_id }}
+      become: true

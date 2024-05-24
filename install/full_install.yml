@@ -11,6 +11,9 @@
 - name: Setup zsh/dotfiles
   ansible.builtin.import_playbook: install_dotfiles.yml
 
+- name: Setup lingering user
+  ansible.builtin.import_playbook: setup_lingering.yml
+
 - name: Install seamless configs
   ansible.builtin.import_playbook: install_configs.yml
 
