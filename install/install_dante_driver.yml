@@ -1,0 +1,50 @@
+---
+- name: Install Madi Drivers
+  hosts: all
+  vars:
+    repo_dir: /home/{{ ansible_user_id }}/dante-pcie-driver
+    driver_source_dir: /home/leto/ak-cloud/Team Computer Music/audio-driver/dante-pcie-1.2.4/
+
+  vars_files:
+    - ../vars/vault.yml
+  tasks:
+    - name: Only install madi drivers on devices that are concerned
+      ansible.builtin.meta: end_host
+      when: not (audio_driver == "dante" or "dante" in audio_driver)
+
+    - name: Install Dependencies
+      ansible.builtin.apt:
+        name:
+          - linux-headers-{{ ansible_facts['kernel'] }}
+          - build-essential
+          - alsa-utils
+          - libasound2-dev
+        state: present
+      become: true
+
+    - name: Copy Driver Source
+      ansible.builtin.copy:
+        src: "{{ driver_source_dir }}"
+        dest: "{{ repo_dir }}"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: preserve
+    - name: Install
+      community.general.make:
+        chdir: "{{ repo_dir }}/kmod"
+
+    - name: Make Install
+      community.general.make:
+        target: install
+        chdir: "{{ repo_dir }}/kmod"
+      become: true
+
+    - name: Update Module Dependencies
+      ansible.builtin.command:
+        cmd: depmod -a
+      become: true
+      
+    - name: Reboot
+      ansible.builtin.reboot:
+      become: true
+

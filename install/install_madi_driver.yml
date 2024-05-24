@@ -8,7 +8,7 @@
   tasks:
     - name: Only install madi drivers on devices that are concerned
       ansible.builtin.meta: end_host
-      when:  not (audio_driver == "madi")
+      when: not (audio_driver == "madi" or "madi" in audio_driver)
 
     - name: Install Dependencies
       ansible.builtin.apt:
