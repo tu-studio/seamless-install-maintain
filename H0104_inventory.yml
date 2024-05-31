@@ -1,13 +1,31 @@
 renderer:
   hosts:
-    kaoru01:
-      ansible_host: 130.149.23.232
+    kaoru1:
+      ansible_host: kaoru1
       ansible_user: tu-studio
-      services: [osc-kreuz, jack-connection-manager, twonder, audio-matrix]
+      services: [jack-connection-manager, twonder, audio-matrix]
       location: H0104
       audio_driver: madi
-    kaoru02:
-      ansible_host: 130.149.23.211
+    kaoru2:
+      ansible_host: kaoru2
+      ansible_user: tu-studio
+      services: [jack-connection-manager, twonder, audio-matrix]
+      location: H0104
+      audio_driver: madi
+    kaoru3:
+      ansible_host: kaoru3
+      ansible_user: tu-studio
+      services: [jack-connection-manager, twonder, audio-matrix]
+      location: H0104
+      audio_driver: madi
+    kaoru4:
+      ansible_host: kaoru4
+      ansible_user: tu-studio
+      services: [jack-connection-manager, twonder, audio-matrix]
+      location: H0104
+      audio_driver: madi
+    kaoru5:
+      ansible_host: kaoru5
       ansible_user: tu-studio
       services: [jack-connection-manager, twonder, audio-matrix]
       location: H0104
@@ -16,8 +34,8 @@ renderer:
 player:
   hosts:
     tengo:
-      ansible_host: 130.149.23.230
+      ansible_host: tengo
       ansible_user: tu-studio
       services: [osc-kreuz, jack-connection-manager, cwonder, gui]
       location: H0104
-      audio_driver: madi
+      audio_driver: [madi, dante]

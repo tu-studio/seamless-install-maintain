@@ -1,9 +1,9 @@
 ---
-- name: Full System upgrade (?)
-  ansible.builtin.import_playbook: upgrade_system.yml
-
 - name: Install Sudo
   ansible.builtin.import_playbook: install_sudo.yml
+
+# - name: Full System upgrade (?)
+#   ansible.builtin.import_playbook: upgrade_system.yml
 
 - name: Add key to github account
   ansible.builtin.import_playbook: setup_ssh-key.yml
@@ -37,3 +37,6 @@
 
 - name: Reboot
   ansible.builtin.import_playbook: reboot.yml
+
+- name: Setup MADI settings
+  ansible.builtin.import_playbook: setup_alsa_settings.yml

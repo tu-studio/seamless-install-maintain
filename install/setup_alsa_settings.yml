@@ -1,0 +1,18 @@
+---
+- name: Setup ALSA settings
+  hosts: all
+  vars_files:
+    - ../vars/vault.yml
+  tasks:
+    - name: Install ALSA mixer
+      ansible.builtin.apt:
+        name:
+          - alsa-utils
+        state: present
+      become: true
+    - name: Only install madi drivers on devices that are concerned
+      ansible.builtin.meta: end_host
+      when: not (audio_driver == "madi" or "madi" in audio_driver)
+    - name: Set MADI wordclock source
+      ansible.builtin.command:
+        cmd: amixer -c MADIFXtest sset 'Clock Selection' 'Word Clock'
