@@ -29,6 +29,9 @@
 - name: Install osc-kreuz
   ansible.builtin.import_playbook: install_osc-kreuz.yml
 
+- name: Install IEM decoder
+  ansible.builtin.import_playbook: install_iem_decoder.yml
+
 - name: Install jack-connection-manager
   ansible.builtin.import_playbook: install_jack-connection-manager.yml
 

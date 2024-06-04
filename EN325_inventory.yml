@@ -4,7 +4,14 @@ renderer:
       ansible_host: newmark.ak.tu-berlin.de
       ansible_user: studio
       services:
-        [osc-kreuz, jack-connection-manager, cwonder, twonder, audio-matrix]
+        [
+          osc-kreuz,
+          jack-connection-manager,
+          cwonder,
+          twonder,
+          audio-matrix,
+          ambisonics,
+        ]
       location: EN325
       audio_driver: dante
     wintermute:
