@@ -10,7 +10,7 @@
     - ../vars/program_versions.yml
 
   tasks:
-    - name: Only install osc-kreuz on devices that are concerned
+    - name: Only install IEM decoder on devices that are concerned
       ansible.builtin.meta: end_host
       when: not (services is defined) or (service_name not in services)
     - name: Install Dependencies
