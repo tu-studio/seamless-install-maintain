@@ -38,6 +38,10 @@
 - name: Install wonder
   ansible.builtin.import_playbook: install_wonder.yml
 
+- name: Enable Performance Mode
+  ansible.builtin.import_playbook: setup_performance_mode.yml
+- name: Setup grub
+  ansible.builtin.import_playbook: setup_grub.yml
 - name: Reboot
   ansible.builtin.import_playbook: reboot.yml
 

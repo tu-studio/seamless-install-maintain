@@ -1,0 +1,14 @@
+---
+- name: Setup Performance Mode
+  hosts: all
+  become: true
+  vars_files:
+    - ../vars/vault.yml
+  tasks:
+    - name: Install cpupower
+      ansible.builtin.apt:
+        name: linux-cpupower
+    - name: Set Performance Mode
+      ansible.builtin.command:
+        cmd: cpupower frequency-set -g performance
+    
