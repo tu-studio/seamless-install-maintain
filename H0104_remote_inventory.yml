@@ -35,15 +35,15 @@ renderer:
 
 player:
   hosts:
-    tengo:
-      ansible_host: tengo
-      ansible_user: tu-studio
-      services: [osc-kreuz, jack-connection-manager, gui]
-      location: H0104
-      audio_driver: [madi, dante]
-    # tengo-remote:
-    #   ansible_host: dose.ak.tu-berlin.de
+    # tengo:
+    #   ansible_host: tengo
     #   ansible_user: tu-studio
     #   services: [osc-kreuz, jack-connection-manager, cwonder, gui]
     #   location: H0104
     #   audio_driver: [madi, dante]
+    tengo:
+      ansible_host: dose.ak.tu-berlin.de
+      ansible_user: tu-studio
+      services: [osc-kreuz, jack-connection-manager, gui]
+      location: H0104
+      audio_driver: [madi, dante]

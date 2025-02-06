@@ -7,7 +7,6 @@ renderer:
         [
           osc-kreuz,
           jack-connection-manager,
-          cwonder,
           twonder,
           audio-matrix,
           ambisonics,
