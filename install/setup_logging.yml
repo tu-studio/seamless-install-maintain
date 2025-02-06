@@ -1,0 +1,10 @@
+- name: Setup Persistent Logging (To fix some audio problems? weird!)
+  hosts: all
+  become: true
+  vars_files:
+    - ../vars/vault.yml
+  tasks:
+    - name: Change logging to persistent
+      ansible.builtin.lineinfile:
+        path: /etc/systemd/journald.conf
+        line: Storage=persistent
