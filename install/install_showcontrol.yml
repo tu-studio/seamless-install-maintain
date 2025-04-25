@@ -1,0 +1,69 @@
+---
+- name: Install showcontrol
+  hosts: all
+  vars:
+    repo_dir: /home/{{ ansible_user_id }}/showcontrol
+    service_name: showcontrol
+  vars_files:
+    - ../vars/program_versions.yml
+    - ../vars/vault.yml
+  tasks:
+    - name: Only install showcontrol on devices that are concerned
+      ansible.builtin.meta: end_host
+      when: not (services is defined) or (service_name not in services)
+
+    - name: Install Dependencies
+      ansible.builtin.apt:
+        name:
+          - python3-pip
+          - python3-venv
+          - meson
+        state: present
+      become: true
+
+    - name: Clone Repo
+      ansible.builtin.git:
+        repo: https://github.com/tu-studio/showcontrol.git
+        dest: "{{ repo_dir }}"
+        version: "{{ showcontrol_version }}"
+        update: true
+
+    - name: Remove Meson Build dir
+      ansible.builtin.file:
+        state: absent
+        path: "{{ repo_dir }}/build"
+
+    - name: Meson Setup
+      ansible.builtin.command:
+        cmd: meson setup -Dversioned_install=true build
+        chdir: "{{ repo_dir }}"
+
+    - name: Meson Install
+      ansible.builtin.command:
+        cmd: meson install -C build
+        chdir: "{{ repo_dir }}"
+      become: true
+
+    - name: Systemd daemon reload
+      ansible.builtin.systemd:
+        daemon_reload: true
+        scope: user
+
+    - name: Systemd enable service
+      ansible.builtin.systemd:
+        service: showcontrol.service
+        enabled: true
+        scope: user
+        masked: false
+
+    - name: Init DB
+      ansible.builtin.command:
+        cmd: /usr/local/share/showcontrol/venv/bin/flask  --app showcontrol.app init-db
+      args:
+        creates: /home/{{ ansible_user_id }}/.local/state/showcontrol/showcontrol.sqlite
+
+    - name: copy osc remote control file over
+      ansible.builtin.copy:
+        remote_src: true
+        src: "{{ repo_dir }}/HufoShowControl.ReaperOSC"
+        dest: "/home/{{ansible_user_id}}/.config/REAPER/OSC/HufoShowControl.ReaperOSC"
