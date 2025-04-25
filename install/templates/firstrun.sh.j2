@@ -1,0 +1,142 @@
+#!/bin/sh
+set -e
+
+## USER_SETUP
+## ssh keys for passwordless login
+echo "Adding ssh public keys for passwordless logins..."
+sudo mkdir -p /home/{{ ansible_user }}/.ssh
+sudo sh -c 'cat << EOF > /home/{{ ansible_user }}/.ssh/authorized_keys
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC2wQQftxOTQG3xBBUrW4AsjQ5iOd1vPoCxAWQYnX9dGUIOv68JVZRtog8+HgnbB2Zqy4wC+Gz7+zeFCX5QJyKtTslFAEs35JznByA9WBMtYiGLRWBWaNn7tadvkqJ+brSu9TFzutnKZmqkZ80m1CH6Kw1BDp3j/Ec9EWACCDizpoFiuvgjfMngIi+RTURUFOlacPB0wKAUc2TBadPQB3OntRn37Ev1umLegkcixBk8hmq6sWNX3LnfYUC+ZP+dpbnY1kV4OmUszVmQqkB2LOkNiDSwYsLwUBruj3y4DLkNi0btJ2dnWfvZFDnoykYwtfbEJ4ABHLHHolW8+6Z2l4SCdiByAWarSftEhAq7gSXbbgRAhkwgUtfMzg0p/LUeKdgkrugmt1almJq9InZbqldvqUTT9t96xWDIiYGWxbb0cKCffHV1plshG3JsV11QCxRkFmb45djtxmwyiAl57gDh0hcN3UB8f7GshWadBMiYtibvVmweK+SHQT59+LadAQM085EYx3UKWT+P/PrcyAR+rs43VtE4n4aS+U61pV8YYN5UGOcRwBjhFqQvbeB3vaLglOHg8sKNAFb3CTzJawPyWudYnYft1kbb7lMrFQLkmYxZR7ZoeNvKmr+s5Apb9f/ZoquLR1O7cFIz86yD3bRhPcskbYYlFGmkMT3cfx3eUw== nicola@avm
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCpVpPkq2g7LfkXYs8gyrbnKrDDhTk6y/Ldq1DPoBg6d0L7TdMc0381sat8T8awtWHRsqpgwkeZCZlfc6YnwGTvFUw2cAGTMhlvVZhV3ubTKRhcgJ7oCiEQfOu8YsLECCbVsTtsnXtKmHE6Fwzn/eMCnzGD/3l9kxhZDZrov4MpJAOxUJAu/MXEZQDexYEkwhliBDsjIHYOjFm0zYw/pMZW5blNfQmpMB7bn1b6ZVB4jZsUVOB//hyKEOaK0LGbJ14T+A9tOJVMlQfa05KLtxua316hnvcnitK3EwJo8IOJamcSHJ8ER+IYlLc1eDaElJY3/E8uqFTF5hkrVEg4isbn
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDHJQHmWgR+Phuyezb4A3ppdoqngKE5PgEce+512RFbGOqhjr3CdF1xNoodTD5mnsmj5zGzrOr0JNtQ1BKHkMSAOUMjRAEDTJqKg/LMrBLRIM8Gq2aUNrVviSFPLyxtra0+cOX6Z71y4+aApmJvCNcnj3W4WGj586JVXsp2RpNVuT0XUFtHA06aeHr8K6XJ/vqqrCb88hf2Zxuy0fw/kjjo1FWtFpwUXMAOLJoMvsBUFEkD9UXLcTR/JF81ar0EOW7etQbXwIALXT/Rx+tTrMmHbmbr+RJoudWXtYFBFlTyhlaMEiRj/7YbWgH6lU+rrhwBi0SZNRD20XA/LNw1FbBOp/ms9NxHAMaVAGK2comCaCKKrieKKlkZmYYK+ggZPL0Gjdjn0dFiTglHhhGKJpPJtw7MFtODjAICs5lo8VKGyppGk5O0paEHvPyDnfAtC/dYur1uimt/7xnRzhG/XGBeXrHQ8yr3K7klw/DlKrZnFrK4+9nrd5iSLSSrg08Pfz8= christian@shf-nb-164
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC5TuN47xtUV+j6Io+SkzzcSNw+CF9rGGT5oXtYjYxu2w4b2lkFKjzPzq6M2Svg6O6pOeanaj1dyiF0Hz+Bpfip98sGzls4iCgiSgv6MrUBnehX1KZtA4kI016BTLHX96q9mZdv27WYllkEIrbqLxNAzspvaawAV1axrQALp5DCQsOcFi62gSXXlfiHKibCRrs6Yn7OmcXTRZP+i62s8zBq/ozakSB60W04q9qsBwvPxBRs6JcOO1U69VmR8ufrD3zz8rCd2JmnOxbPPSBQuA1nSNM/xysZ26ohmB5H7cp81Y9VFcZptJ/KAm7xoWRCtJeOFI8ZaFw0tQpAC0FHoBCFM29W0sOqqwtmBby/9G1pRVLoBuh6hkJ3kGDGTb6+Hwzu1iSeEvxu3dQ2WCUEwSbpuW04asgEdEu6SBH/YNMgKUN/DWn+LIrxU7c2OX95QvES2UErNYQXei9YbLs2WK5ORlxC+92XwA+3sK3GYww/mFWd4meub//dAYPanYvj1z8= mathias@SHF-NB-196
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDEOJO4elIdgAs3wwG48OZHeDookvd6NHvQHt8riC/r/M0dFaiNULc7n1AVIudX2uxkVD8o38miOHHBSMkr39IhdmPD4SWMtn3x7VtsJAd3xQME2bLtdI8XX6aeQwG/IjwGvxnDdS5JNMkBi6vrw4LSXb7rNNc+6cFaMpD2dnoYLfdQb6N1bhnfHc56vEHIiosv2JstxGmoVPmoDnDkKiKIV9H+xoXW3bQPdhqPXdkyoAfVskgmcBwoJpbG7EzXIUub5AzC5OuybCZSJEc/D8aIoGtrv+e3ADojSskGvRoBR83oJhoj45KuFWqeULAjHE9+my4EunI2gFDSBoxVKX+Ty94dOPa10caycYWy6jSrmpGSK3s67/gCrRRmE+WJMR9zEcd69UXImFOKpQzTwX8dfGyBskyJOmZBUbvJI4cMwBOsJ7YNFVwAlE8xAps9clt8NyYF+FxE0ulFhhiUv56LZYlP4zCe9suKqFTIZHtrCQU7dYz/ehdKKQs3I4EESNb0VBiZ5phKtE4gTp/49W26BlivfG/qUXqsOhGJYYwpIExQ4Uj3y11FdqHjOaRkslWZ+r8PkZzq57G2imDVdmlIPf8KA5MFKobVIoekLt4ADvzpylLBgNAIunfy40BorucOxoBYYqGbCIdIxFfheZf0Ti1Okl5CCggvu0e3UO5wLw== daniel@Ubuntu-ThinkPad
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDwCLzUnvLPGHQZf5uhYItUQn7J9++MBeoT1ikdE1xHeZk18lGESFoNcKCt9sJV2/XHsNTopkwBtweGdLjzdBuSwrlTzY6lZUupbXrXxhbvW91JhQpx6vFUoxC2hMi8QG2Kjg77jASFLdY7lWxRJVHA25ZcQDQE4H+JBRipwAjSbYFmViQIMdqycKgxlaxZo+m200ME3cedNpulsL2XdQzjjciyscL9cW33DQ2bWk7MjWeyLdkJjPAiFQ7yoZGhw51ohhOA7qQih2RLaJewpmDYxHBHX+stG+um718vvhAalIBeW1zrKuWil/sfOZ/0kjpPqhEtBkLxhUF8ulFfabxVc+SOVecFYUpIoS6LGmWmwwK7prn6iDLGQ7HdrdZzGL9NRS/Y1qSy3T5wsQdNOXnEku9dUZpSnWF4XZ771gUAlv9CpFFbvNyBQXmLQWe6uTP4rq+GCKRd0NRB/Tz1rLjg3MgbSIAouMf5i1zXJN8iBHxwfsRvTjsJSsxFVibrnUU= felix@avm-notebook-felix
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDINLC4eHmDAuAMRRgg+OC4jHFx7fB7IqJMrESXRvUdRD+u9bygqt+sKrhGSa7Dg2baOW1E71AIaF1OShEhZtlQNnatrT+Y0JLBt7zkuIWQdci/1oPXftbnIjl/XHcbcsSq28mYoEHI10QARfawSlBukUR9CBLTAcug1DOgb8+lf8uNO/rFkMEJFsy0s6dek13YZ+g8MlWe+AOM8ccDEsELHvi+p27qtQ36Kej2RDR0S9nEtEVaOTFBH5ZeE/H3KZZ8IF9ye4BolAxBT1bLnjxXjYatKiU0qUWA29ndYwrSwQ1mwkCMCE5571n2CfCJtEDkzs3xwbI5A2n9Wspz945fx4Xjtoc+DWyj1xjhw6ahIzOXd49VeF73yCcaMEiqXwjnGzw+OwkUG3Gs+DjmIFibnMvdMULrV1wIqQYe3ma6RN0q1wBRNCstWnfS+qSqUoBAwxNaQGUk8GKprCwxZVn/Qa25FhstFzKOPPu07kXHuc6de3XzzRlhWW8oMr4dkWE= shai@dune
+EOF'
+sudo chown -R {{ ansible_user }}:users /home/{{ ansible_user }}/.ssh
+sudo chmod 700 /home/{{ ansible_user }}/.ssh
+sudo chmod 600 /home/{{ ansible_user }}/.ssh/authorized_keys
+##################
+
+## END USER SETUP ##############################################################
+
+
+
+# Check if installation takes place  in .asg network and set proxy accordingly
+if hostname -I | grep -qE '172.25.1[6789]' ; then
+  echo "We are in .asg network, will setup proxy now"avm
+  sudo sh -c 'cat << EOF > /etc/apt/apt.conf.d/95proxies
+Acquire::http::Proxy "http://172.16.10.122:8888";
+Acquire::https::Proxy "http://172.16.10.122:8888";
+EOF'
+# Systemwide for now
+export http_proxy=http://172.16.10.122:8888
+export https_proxy=http://172.16.10.122:8888
+fi
+
+##################
+## END SOFTWARE SETUP ##########################################################
+
+## SYSTEM SETTINGS #############################################################
+## Set ntp server
+echo "Setting timeserver"
+sudo sh -c 'echo "NTP=192.168.144.11" >> /etc/systemd/timesyncd.conf'
+sudo systemctl restart systemd-timesyncd.service
+##################
+
+
+## Load Dell HW Monitoring kernel module at boot time (late)
+sudo sh -c 'echo "options dell-smm-hwmon force=1" > /etc/modprobe.d/dell-smm-hwmon.conf'
+sudo sh -c 'echo "dell-smm-hwmon" > /etc/modules-load.d/dell-smm-hwmon.conf'
+##################
+
+
+# Setting GRUB timeout to 0
+echo "Setting Grub timeout to 0..."
+sudo sed -i "/GRUB_TIMEOUT=/c\GRUB_TIMEOUT=0" /etc/default/grub
+sudo update-grub
+##################
+
+# WOL-Fix for dreaded Optiplex Hardware
+sudo sh -c 'interface=$(ip route show default | awk '\''/default/ {print $5}'\'') ; cat << EOF > /etc/systemd/system/wolfix.service
+[Unit]
+Description=Fix Wake on LAN reboot problem
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/sbin/ethtool -s $interface wol g
+
+[Install]
+WantedBy=multi-user.target
+EOF'
+sudo systemctl daemon-reload
+sudo systemctl enable wolfix
+##################
+
+## Install system MQTT probe and services #####
+cd /home/{{ ansible_user }}
+sudo tar --no-overwrite-dir -xvf /home/{{ ansible_user }}/probe_installer.tar.gz
+cd /home/{{ ansible_user }}/probe_installer/humboldt_probe
+sudo mkdir -p /home/{{ ansible_user }}/humboldt_probe
+APP_PY=/home/{{ ansible_user }}/humboldt_probe/src/app.py
+CONFIG_FILE=/home/{{ ansible_user }}/content/userconfig.txt
+MQTT_HOSTNAME=srv-control-avm
+CA_CERTIFICATE=/home/{{ ansible_user }}/humboldt_probe/tls/ca_certificate.pem
+CERTFILE=/home/{{ ansible_user }}/humboldt_probe/tls/client_certificate.pem
+KEYFILE=/home/{{ ansible_user }}/humboldt_probe/tls/client_key.pem
+LOGLEVEL=CRITICAL
+
+sudo cp -r ./src /home/{{ ansible_user }}/humboldt_probe
+sudo cp -r ./tls /home/{{ ansible_user }}/humboldt_probe
+sudo chown -R {{ ansible_user }}:users /home/{{ ansible_user }}/humboldt_probe
+sudo chmod -R 0600 /home/{{ ansible_user }}/humboldt_probe
+sudo chmod 0700 /home/{{ ansible_user }}/humboldt_probe
+sudo chmod 0700 /home/{{ ansible_user }}/humboldt_probe/tls
+sudo chmod 0700 /home/{{ ansible_user }}/humboldt_probe/src
+sudo chmod 0700 /home/{{ ansible_user }}/humboldt_probe/src/methods
+sudo chmod 0700 /home/{{ ansible_user }}/humboldt_probe/src/misc
+
+render_template() {
+  eval "echo \"$(cat $1)\""
+}
+
+render_template humboldt-probe.service.template | sudo tee /etc/systemd/system/humboldt-probe.service
+
+
+## Install python sd-notify
+cd /home/{{ ansible_user }}/probe_installer/sd-notify-0.1.0
+sudo python3 setup.py install
+cd ../
+sudo rm -rf /home/{{ ansible_user }}/probe_installer/sd-notify-0.1.0
+
+sudo systemctl daemon-reload
+sudo systemctl enable humboldt-probe.service
+
+#Config-file
+chmod +x /home/{{ ansible_user }}/probe_installer/patch_userconfig.py
+sudo /home/{{ ansible_user }}/probe_installer/patch_userconfig.py /home/{{ ansible_user }}/content/userconfig.txt
+sudo chown {{ ansible_user }}:users /home/{{ ansible_user }}/content/userconfig.txt
+sudo chmod 665 /home/{{ ansible_user }}/content/userconfig.txt
+##################
+
+## Now finally set set proxy for .asg network
+if hostname -I | grep -qE '172.25.1[6789]' ; then
+sudo sh -c 'cat << EOF > /etc/apt/apt.conf.d/95proxies
+Acquire::http::Proxy "http://172.16.10.122:8888";
+Acquire::https::Proxy "http://172.16.10.122:8888";
+EOF'
+fi
+##################
+
+## END PURPOSE SETUP ###########################################################
+## Allow everybody to poweroff the machine
+# echo "Allowing all users to poweroff and taking passwordless sudo away!"
+# sudo chmod +s /sbin/shutdown
+##################
+
+## END SYSTEM SETTINGS #########################################################
+
+## END INSTALLATION ############################################################

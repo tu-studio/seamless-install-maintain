@@ -1,0 +1,25 @@
+---
+- name: Setup HuFo Proxy Server
+  hosts: all
+  become_method: su
+  vars:
+    env_vars:
+      - key: http_proxy
+        value: http://172.16.10.122:8888
+      - key: https_proxy
+        value: http://172.16.10.122:8888
+  vars_files:
+    - ../vars/vault.yml
+  tasks:
+    - name: populate /etc/environment
+      lineinfile:
+        path: /etc/environment
+        state: present
+        regexp: "^{{ item.key }}="
+        line: "{{ item.key }}={{ item.value }}"
+
+      with_items: "{{ env_vars }}"
+      become: true
+
+    - name: reset ssh connection to allow user changes to affect 'current login user'
+      meta: reset_connection

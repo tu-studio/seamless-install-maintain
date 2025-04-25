@@ -1,0 +1,62 @@
+---
+- name: Execute HUFO first run script
+  hosts: all
+  become: true
+  vars_files: ../vars/vault.yml
+  tasks:
+    - name: Install software
+      ansible.builtin.apt:
+        name:
+          - htop
+          - ethtool
+          - python3-click
+          - python3-paho-mqtt
+          - python3-setuptools
+          - python3-psutil
+          - python3-pip
+          - python3-alsaaudio
+          - acpid
+          - dkms
+          - gnome-system-monitor
+        state: present
+    - name: Remove software
+      ansible.builtin.apt:
+        name:
+          - libreoffice-common
+          - avahi-daemon
+          - cups
+          - brltty
+        state: absent
+    - name: Template firstrun.sh over
+      ansible.builtin.template:
+        src: firstrun.sh.j2
+        dest: /home/{{ ansible_user }}/firstrun.sh
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "u=rwx,g=rx,o=rx"
+    - name: Copy Probe installer over
+      ansible.builtin.copy:
+        src: templates/probe_installer.tar.gz
+        dest: /home/{{ ansible_user }}/probe_installer.tar.gz
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "u=rw,g=r,o=r"
+
+    - name: Create Dir for
+      ansible.builtin.file:
+        path: /home/{{ ansible_user }}/content/
+        state: directory
+        owner: "{{ ansible_user }}"
+    - name: Create config file
+      ansible.builtin.file:
+        path: /home/{{ ansible_user }}/content/userconfig.txt
+        state: touch
+        mode: 665
+        owner: "{{ ansible_user }}"
+        modification_time: preserve
+        access_time: preserve
+
+    - name: Execute probe installer
+      ansible.builtin.command:
+        cmd: ./firstrun.sh
+        chdir: /home/{{ ansible_user }}
