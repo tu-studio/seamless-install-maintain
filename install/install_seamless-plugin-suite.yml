@@ -1,0 +1,63 @@
+---
+- name: Install seamless-plugin-suite
+  hosts: player
+  vars:
+    archive_dir: /home/{{ ansible_user_id }}/seamless-plugin-suite-archives
+    plugin_folder_name: seamless-plugin-suite-{{ seamless_plugins_version }}-Linux
+    archive_name: "{{ plugin_folder_name }}.zip"
+    source_file: "~/Downloads/{{ archive_name }}"
+    vst_dir: "/home/{{ ansible_user_id }}/.vst3"
+  vars_files:
+    - ../vars/vault.yml
+    - ../vars/program_versions.yml
+  tasks:
+    - name: Create needed directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      loop: ["{{ vst_dir }}", "{{ archive_dir }}"]
+
+    # - name: copy local plugin archive over
+    #   ansible.builtin.copy:
+    #     src: "{{ source_file }}"
+    #     dest: "{{ archive_dir }}/{{ archive_name }}"
+    - name: Extract plugin archive to remote machine
+      ansible.builtin.unarchive:
+        src: "{{ source_file }}"
+        dest: "{{ archive_dir }}"
+
+    - name: copy Plugins into vst dir
+      ansible.builtin.command:
+        argv:
+          - ln
+          - "-s"
+          - "{{ archive_dir }}/{{plugin_folder_name}}/{{ item }}"
+          - "{{vst_dir}}"
+      loop: ["SeamLess\ Client.vst3", "SeamLess\ Main.vst3"]
+    # - name: Install Dependencies
+    #   ansible.builtin.apt:
+    #     name:
+    #       - cmake
+    #       - build-essential
+    #       - liblo-dev
+    #       - pkg-config
+    #     state: present
+    #   become: true
+
+    # - name: Clone Repo
+    #   ansible.builtin.git:
+    #     repo: https://github.com/tu-studio/seamless-plugin-suite.git
+    #     dest: "{{ repo_dir }}"
+    #     version: "{{ seamless_plugins_version }}"
+    #     update: true
+    #     recursive: true
+
+    # - name: Cmake configure build
+    #   ansible.builtin.command:
+    #     cmd: cmake -B build -DCMAKE_BUILD_TYPE=Release
+    #     chdir: "{{ repo_dir }}"
+
+    # - name: Cmake build
+    #   ansible.builtin.command:
+    #     cmd: cmake --build build --config Release
+    #     chdir: "{{ repo_dir }}"
