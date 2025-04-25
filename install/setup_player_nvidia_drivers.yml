@@ -1,0 +1,46 @@
+---
+- name: Setup Player PC
+  hosts: player
+
+  vars_files:
+    - ../vars/vault.yml
+  tasks:
+  # setup GPU
+    - name: Add Repos
+      ansible.builtin.command:
+        cmd: apt-add-repository -yn contrib non-free non-free-firmware
+      become: true
+      register: apt_repos
+      changed_when: "'Added' in apt_repos.stdout"
+
+    - name: Update Apt Cache
+      ansible.builtin.apt:
+        update_cache: true
+      become: true
+      when: apt_repos.changed 
+      
+    - name: Install Nvidia drivers
+      ansible.builtin.apt:
+        name:
+          - nvidia-driver
+          - firmware-misc-nonfree
+      become: true
+
+    - name: Enable modesetting driver
+      ansible.builtin.lineinfile:
+        path: /etc/modprobe.d/nvidia_drm.conf
+        line: options nvidia_drm modeset=1
+      become: true
+      register: driver_enabled
+
+    - name: Update initramfs
+      ansible.builtin.command:
+        cmd: update-initramfs -u
+      become: true
+      when: driver_enabled.changed
+
+    - name: Reboot
+      ansible.builtin.reboot:
+      when: driver_enabled.changed
+
+

@@ -1,0 +1,21 @@
+---
+- name: Setup Player PC
+  hosts: player
+
+  vars_files:
+    - ../vars/vault.yml
+  tasks:
+
+    # Setup service for alsa_in for the danteinterface
+    - name: Systemd daemon reload
+      ansible.builtin.systemd:
+        daemon_reload: true
+        scope: user
+
+    - name: Install jack_dante service
+      ansible.builtin.systemd:
+        service: jack_dante.service
+        enabled: true
+        state: restarted
+        scope: user
+        masked: false

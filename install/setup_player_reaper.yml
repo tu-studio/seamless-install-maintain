@@ -1,0 +1,63 @@
+---
+- name: Setup Player PC
+  hosts: player
+  vars:
+    home_dir: /home/{{ ansible_user_id }}/
+    dir: /home/{{ ansible_user_id }}/reaper
+    archive_name: reaper716_linux_x86_64.tar.xz
+    url: https://dlcf.reaper.fm/7.x/reaper716_linux_x86_64.tar.xz
+
+    sws_file: ~/Downloads/sws-2.14.0.3-Linux-x86_64.tar.xz
+    reaper_config_dir: "{{ home_dir }}/.config/REAPER"
+
+  vars_files:
+    - ../vars/vault.yml
+  tasks:
+    # disable systemd services
+    - name: Disable pulseaudio
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: false
+        masked: true
+        state: stopped
+        scope: user
+      become: false
+      loop: [pulseaudio.service, pulseaudio.socket]
+
+    - name: Disable sleep, suspend, hibernate and hybrid sleep and such
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        masked: true
+        enabled: false
+        state: stopped
+      become: true
+      loop:
+        [sleep.target, suspend.target, hibernate.target, hybrid-sleep.target]
+
+    # install REAPER
+    - name: Download REAPER
+      ansible.builtin.get_url:
+        url: "{{ url }}"
+        dest: "{{ home_dir }}"
+      register: reaper_download
+
+    - name: Extract reaper archive
+      ansible.builtin.unarchive:
+        remote_src: true
+        src: "{{ home_dir }}/{{ archive_name }}"
+        dest: "{{ home_dir }}"
+      when: reaper_download.changed
+
+    - name: Install REAPER
+      ansible.builtin.command:
+        cmd: ./install-reaper.sh --install /opt --usr-local-bin-symlink --integrate-desktop
+        chdir: "{{ home_dir }}/reaper_linux_x86_64"
+      become: true
+      when: reaper_download.changed
+
+    - name: install sws extensions (from local folder)
+      ansible.builtin.unarchive:
+        src: "{{ sws_file }}"
+        dest: "{{ reaper_config_dir }}"
+
+    # - name: Setup

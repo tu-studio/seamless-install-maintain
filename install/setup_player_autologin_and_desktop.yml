@@ -1,0 +1,30 @@
+---
+- name: Setup Player PC
+  hosts: player
+  vars:
+    desktop_env: plasma
+  vars_files:
+    - ../vars/vault.yml
+  tasks:
+    - name: Register autologin
+      ansible.builtin.blockinfile:
+        path: /etc/sddm.conf
+        block: |
+          [Autologin]
+          User={{ ansible_user_id }}
+          Session={{ desktop_env }}.desktop
+        state: present
+        create: true
+      become: true
+      register: login_changed
+
+    - name: Reboot
+      ansible.builtin.reboot:
+      become: true
+      when: login_changed.changed
+
+    - name: Install Krfb
+      ansible.builtin.apt:
+        name: krfb
+        state: present
+      become: true
