@@ -16,7 +16,7 @@
           - tree
     - name: Clone git repository
       git:
-        repo: git@github.com:tu-studio/.dotfiles.git
+        repo: https://github.com/tu-studio/.dotfiles.git
         dest: /home/{{ ansible_user }}/.dotfiles
         recursive: true
         accept_hostkey: true
@@ -29,4 +29,3 @@
       user:
         name: "{{ ansible_user }}"
         shell: /bin/zsh
-    

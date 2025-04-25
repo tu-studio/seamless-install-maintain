@@ -28,15 +28,18 @@
 
     - name: Clone Repo
       ansible.builtin.git:
-        repo: git@github.com:tu-studio/wonder.git
+        repo: https://github.com/tu-studio/wonder.git
         dest: "{{ repo_dir }}"
         version: "{{ wonder_version }}"
         update: true
+
+      register: repo_update
 
     - name: Remove Meson Build dir
       ansible.builtin.file:
         state: absent
         path: "{{ repo_dir }}/build"
+      when: repo_update.changed
 
     - name: Meson Setup
       ansible.builtin.command:
@@ -45,17 +48,20 @@
       vars:
         cwonder_arg: "-Dcwonder={{ host_has_cwonder | lower }}"
         twonder_arg: "-Dtwonder={{ host_has_twonder | lower }}"
+      when: repo_update.changed
 
     - name: Compile Meson
       ansible.builtin.command:
         cmd: meson compile -C build
         chdir: "{{ repo_dir }}"
+      when: repo_update.changed
 
     - name: Meson Install
       ansible.builtin.command:
         cmd: meson install -C build
         chdir: "{{ repo_dir }}"
       become: true
+      when: repo_update.changed
 
     - name: Systemd daemon reload
       ansible.builtin.systemd:

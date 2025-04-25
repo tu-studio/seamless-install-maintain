@@ -19,7 +19,7 @@
 
     - name: Clone Repo
       ansible.builtin.git:
-        repo: git@github.com:tu-studio/madifx.git
+        repo: https://github.com/tu-studio/madifx.git
         dest: "{{ repo_dir }}"
         single_branch: true
         version: HDSPe_MADI_FX

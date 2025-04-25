@@ -24,11 +24,10 @@
 
     - name: Clone Repo
       ansible.builtin.git:
-        repo: git@github.com:tu-studio/audio-matrix.git
+        repo: https://github.com/tu-studio/audio-matrix.git
         dest: "{{ repo_dir }}"
         version: "{{ audio_matrix_version }}"
         update: true
-      
 
     - name: Cmake configure build
       ansible.builtin.command:

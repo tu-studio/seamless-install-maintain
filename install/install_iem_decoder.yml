@@ -16,7 +16,7 @@
     - name: Install Dependencies
       ansible.builtin.apt:
         name:
-          - libasound2-dev 
+          - libasound2-dev
           - libjack-jackd2-dev
           - libfreetype6-dev
           - libx11-dev
@@ -34,17 +34,17 @@
 
     - name: Clone Repo
       ansible.builtin.git:
-        repo: git@github.com:TU-Studio/IEMPluginSuite.git
+        repo: https://github.com/TU-Studio/IEMPluginSuite.git
         dest: "{{ repo_dir }}"
         version: "{{ iem_plugins_version }}"
         update: true
     - name: Version Number
       ansible.builtin.command:
         cmd: git describe --dirty --tags
-        chdir:  "{{ repo_dir }}"
+        chdir: "{{ repo_dir }}"
       register: version_number
       changed_when: false
-      
+
     - name: Cmake configure build
       ansible.builtin.command:
         cmd: cmake -B build -DCMAKE_BUILD_TYPE=Release -DIEM_STANDALONE_HEADLESS=1

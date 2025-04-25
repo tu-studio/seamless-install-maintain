@@ -7,7 +7,7 @@
     - ../vars/program_versions.yml
     - ../vars/vault.yml
   tasks:
-    - name: Install Dependencies
+    - name: Install Config Dependencies
       ansible.builtin.apt:
         name:
           - meson
@@ -16,7 +16,7 @@
 
     - name: Clone Repo
       ansible.builtin.git:
-        repo: git@github.com:tu-studio/seamless-configs.git
+        repo: https://github.com/tu-studio/seamless-configs.git
         dest: "{{ repo_dir }}"
         version: "{{ config_version }}"
         update: true
@@ -41,7 +41,16 @@
       ansible.builtin.systemd:
         daemon_reload: true
         scope: user
-    - name: Systemd enable service
+
+    - name: Make sure systemd user dir exists
+      ansible.builtin.file:
+        path: /home/{{ ansible_user }}/.config/systemd
+        state: directory
+        owner: "{{ ansible_user }}"
+        mode: 755
+      become: true
+
+    - name: Systemd enable jack service
       ansible.builtin.systemd:
         service: jack.service
         enabled: true

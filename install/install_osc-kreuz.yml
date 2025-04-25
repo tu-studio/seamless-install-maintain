@@ -24,7 +24,7 @@
 
     - name: Clone Repo
       ansible.builtin.git:
-        repo: git@github.com:tu-studio/osc-kreuz.git
+        repo: https://github.com/tu-studio/osc-kreuz.git
         dest: "{{ repo_dir }}"
         version: "{{ osc_kreuz_version }}"
         update: true
