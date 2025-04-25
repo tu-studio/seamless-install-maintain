@@ -1,0 +1,23 @@
+---
+- name: Setup permissions for shutdown
+  hosts: all
+  become: true
+  vars_files:
+    - ../vars/vault.yml
+  tasks:
+    - name: Create Shutdown group
+      ansible.builtin.group:
+        name: shutdown
+        state: present
+    - name: Add user to shutdown group
+      become: true
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        groups: shutdown
+        append: yes
+    - name: Allow the shutdown group to use shutdown
+      community.general.sudoers:
+        name: allow-shutdown
+        state: present
+        group: shutdown
+        commands: /sbin/shutdown
