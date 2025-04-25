@@ -1,8 +1,8 @@
 renderer:
   hosts:
     riviera:
-      ansible_host: newmark.ak.tu-berlin.de
-      ansible_user: studio
+      ansible_host: riviera.ak.tu-berlin.de
+      ansible_user: tu-studio
       services:
         [
           osc-kreuz,

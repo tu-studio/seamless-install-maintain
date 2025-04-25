@@ -1,0 +1,35 @@
+renderer:
+  hosts:
+    renderer01:
+      ansible_host: 3900-ZG-RE-01.asg
+      ansible_user: tu-studio
+      services:
+        [
+          osc-kreuz,
+          jack-connection-manager,
+          audio-matrix,
+          ambisonics,
+        ]
+      location: HUFO
+      audio_driver: dante
+    renderer02:
+      ansible_host: 3900-ZG-RE-02.asg
+      ansible_user: tu-studio
+      services: [jack-connection-manager, twonder, audio-matrix]
+      location: HUFO
+      audio_driver: dante
+    renderer03:
+      ansible_host: 3900-ZG-RE-03.asg
+      ansible_user: tu-studio
+      services: [jack-connection-manager, twonder, audio-matrix]
+      location: HUFO
+      audio_driver: dante
+
+player:
+  hosts:
+    playstation:
+      ansible_host: 3900-ZG-PS-01.asg
+      ansible_user: tu-studio
+      services: [jack-connection-manager, gui, showcontrol]
+      location: HUFO
+      audio_driver: [dante]
