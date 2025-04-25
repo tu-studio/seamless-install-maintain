@@ -1,4 +1,7 @@
 ---
+- name: Remove faulty apt source
+  ansible.builtin.import_playbook: remove_apt_cdrom_source.yml
+
 - name: Install Sudo
   ansible.builtin.import_playbook: install_sudo.yml
 
@@ -19,6 +22,10 @@
 
 - name: Install audio drivers
   ansible.builtin.import_playbook: install_madi_driver.yml
+
+- name: Install audio drivers
+  ansible.builtin.import_playbook: install_dante_driver.yml
+
 
 - name: Install jackd
   ansible.builtin.import_playbook: install_jack.yml
@@ -42,6 +49,9 @@
   ansible.builtin.import_playbook: setup_performance_mode.yml
 - name: Setup grub
   ansible.builtin.import_playbook: setup_grub.yml
+
+- name: Setup Logging
+  ansible.builtin.import_playbook: setup_logging.yml
 - name: Reboot
   ansible.builtin.import_playbook: reboot.yml
 

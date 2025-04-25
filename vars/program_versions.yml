@@ -4,4 +4,6 @@ config_version: main
 jack_connection_manager_version: main
 osc_kreuz_version: main
 wonder_version: main
+showcontrol_version: main
 iem_plugins_version: 1.14.3
+seamless_plugins_version: 1.0.0

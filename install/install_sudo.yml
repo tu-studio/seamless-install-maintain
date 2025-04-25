@@ -9,6 +9,7 @@
     - name: Install sudo
       apt:
         name: sudo
+        update_cache: true
     - name: Add user to sudo group
       user:
         name: "{{ ansible_user }}"

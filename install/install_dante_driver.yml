@@ -3,12 +3,12 @@
   hosts: all
   vars:
     repo_dir: /home/{{ ansible_user_id }}/dante-pcie-driver
-    driver_source_dir: /home/leto/ak-cloud/Team Computer Music/audio-driver/dante-pcie-1.2.4/
 
   vars_files:
     - ../vars/vault.yml
+    - ../vars/vars.yml
   tasks:
-    - name: Only install madi drivers on devices that are concerned
+    - name: Only install dante drivers on devices that are concerned
       ansible.builtin.meta: end_host
       when: not (audio_driver == "dante" or "dante" in audio_driver)
 
@@ -24,7 +24,7 @@
 
     - name: Copy Driver Source
       ansible.builtin.copy:
-        src: "{{ driver_source_dir }}"
+        src: "{{ dante_driver_source_dir }}"
         dest: "{{ repo_dir }}"
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
@@ -43,8 +43,7 @@
       ansible.builtin.command:
         cmd: depmod -a
       become: true
-      
+
     - name: Reboot
       ansible.builtin.reboot:
       become: true
-
