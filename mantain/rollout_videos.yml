@@ -16,13 +16,13 @@
     #     owner: root
     #     group: root
     #     mode: "u=rwx,g=rx,o=rx"
-    - name: "Copy Transformation onto the server"
-      copy:
-        src: "{{ project_source }}transformation/0{{ inventory_hostname[-1] }}-Transformations-Fehr.mp4"
-        dest: /mnt/data/
-        owner: root
-        group: root
-        mode: "u=rwx,g=rx,o=rx"
+    # - name: "Copy Transformation onto the server"
+    #   copy:
+    #     src: "{{ project_source }}transformation/0{{ inventory_hostname[-1] }}-Transformations-Fehr.mp4"
+    #     dest: /mnt/data/
+    #     owner: root
+    #     group: root
+    #     mode: "u=rwx,g=rx,o=rx"
     # - name: "Copy Wasserwelten onto the server"
     #   copy:
     #     src: "{{ project_source }}/Wasserwelten/wasser_{{ inventory_hostname[-1] }}.mov"
@@ -50,4 +50,3 @@
         video_id: "{{ inventory_hostname[-1] }}"
     - name: Reboot
       ansible.builtin.reboot:
-
