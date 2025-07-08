@@ -1,6 +1,6 @@
 ---
 - name: Roll out new project
-  hosts: video_player
+  hosts: info_player
   gather_facts: false
   vars:
     project_source: /home/leto/ak/hufo_videos/
@@ -41,12 +41,12 @@
 
     - name: "Copy playlist.txt"
       ansible.builtin.template:
-        src: playlist.txt.j2
+        src: playlist_info.txt.j2
         dest: /mnt/data/playlist.txt
         owner: root
         group: root
         mode: "u=rwx,g=rx,o=rx"
       vars:
         video_id: "{{ inventory_hostname[-1] }}"
-    - name: Reboot
-      ansible.builtin.reboot:
+    # - name: Reboot
+    #   ansible.builtin.reboot:
