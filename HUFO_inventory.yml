@@ -33,3 +33,37 @@ player:
       services: [jack-connection-manager, gui, showcontrol]
       location: HUFO
       audio_driver: [dante]
+
+video_hosts:
+  hosts: 
+    video_player_1: 
+      ansible_host: 3910-PC-01.asg
+      ansible_user: root
+
+    video_player_2: 
+      ansible_host: 3910-PC-02.asg
+      ansible_user: root
+
+    video_player_3: 
+      ansible_host: 3910-PC-03.asg
+      ansible_user: root
+
+    video_player_4: 
+      ansible_host: 3910-PC-04.asg
+      ansible_user: root
+
+    video_player_5: 
+      ansible_host: 3910-PC-05.asg
+      ansible_user: root
+
+    video_player_6: 
+      ansible_host: 3910-PC-06.asg
+      ansible_user: root
+
+    video_player_7: 
+      ansible_host: 3910-PC-07.asg
+      ansible_user: root
+
+    video_player_8: 
+      ansible_host: 3910-PC-08.asg
+      ansible_user: root
