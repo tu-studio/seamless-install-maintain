@@ -4,8 +4,8 @@
   vars:
     home_dir: /home/{{ ansible_user_id }}/
     dir: /home/{{ ansible_user_id }}/reaper
-    archive_name: reaper716_linux_x86_64.tar.xz
-    url: https://dlcf.reaper.fm/7.x/reaper716_linux_x86_64.tar.xz
+    archive_name: reaper739_linux_x86_64.tar.xz
+    url: https://dlcf.reaper.fm/7.x/reaper739_linux_x86_64.tar.xz
 
     sws_file: ~/Downloads/sws-2.14.0.3-Linux-x86_64.tar.xz
     reaper_config_dir: "{{ home_dir }}/.config/REAPER"
