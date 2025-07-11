@@ -1,0 +1,12 @@
+---
+- name: Get all videos
+  hosts: [info_player, video_player]
+  gather_facts: false
+  vars:
+    target_dir: /home/leto/ak/hufo_videos/
+  tasks:
+    - name: Synchronize Videos to local folders
+      ansible.posix.synchronize:
+        mode: pull
+        src: /mnt/data/
+        dest: "{{ target_dir }}/{{ ansible_hostname }}"
