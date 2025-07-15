@@ -1,12 +1,29 @@
 ---
 - name: Get all videos
-  hosts: [info_player, video_player]
+  hosts: [video_player]
   gather_facts: false
   vars:
     target_dir: /home/leto/ak/hufo_videos/
   tasks:
     - name: Synchronize Videos to local folders
-      ansible.posix.synchronize:
-        mode: pull
-        src: /mnt/data/
-        dest: "{{ target_dir }}/{{ ansible_hostname }}"
+      ansible.builtin.fetch:
+        src: /mnt/data/{{ item }}
+        dest: "{{ target_dir }}/{{ inventory_hostname }}/"
+        flat: true
+        fail_on_missing: true
+      vars:
+        video_id: "{{ inventory_hostname[-1] }}"
+      loop:
+        - "trailer{{ video_id }}.mov"
+        - "bds{{ video_id }}.mov"
+        - "sufi{{ video_id }}.mov"
+        - "FehrDaten{{ video_id }}.mp4"
+        - "iwnw{{ video_id }}.mov"
+        - "oksus{{ video_id }}.mov"
+        - "lc{{ video_id }}.mov"
+        - "Passage{{ video_id }}.mov"
+        - "triple{{ video_id }}.mov"
+        - "0{{ video_id }}-Transformations-Fehr.mp4"
+        - "sculptur_{{ video_id }}.mov"
+        - "wasser_{{ video_id }}.mov"
+        - "Pune_Metamorphosis_HF-0{{ video_id }}.mp4"
