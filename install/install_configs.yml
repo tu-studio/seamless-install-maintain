@@ -1,6 +1,6 @@
 ---
 - name: Install configs
-  hosts: all
+  hosts: [renderer, player]
   vars:
     repo_dir: /home/{{ ansible_user_id }}/configs
   vars_files:
