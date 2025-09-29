@@ -3,19 +3,40 @@
   hosts: video_player
   gather_facts: false
   vars:
-    project_source: /home/leto/ak/hufo_videos/
+    project_source: /home/leto/ak/hufo_videos/videos/
   tasks:
     - name: Mount Data directory
       ansible.builtin.shell:
         cmd: cardmount rw
 
-    # - name: "Copy Metamorphosis onto the server"
+    # - name: "Copy Pagtatahip onto the server"
     #   copy:
-    #     src: "{{ project_source }}pune_metamorphosis/Pune_Metamorphosis_HF-0{{ inventory_hostname[-1] }}.mp4"
+    #     src: "{{ project_source }}pagtatahip/pagtatahip_{{ inventory_hostname[-1] }}.mp4"
     #     dest: /mnt/data/
     #     owner: root
     #     group: root
     #     mode: "u=rwx,g=rx,o=rx"
+
+    # - name: "Copy lullabies onto the server"
+    #   copy:
+    #     src: "{{ project_source }}es_dunkelt_schon/{{ item }}/lullabies_{{item}}_{{ inventory_hostname[-1] }}.mp4"
+    #     dest: /mnt/data/
+    #     owner: root
+    #     group: root
+    #     mode: "u=rwx,g=rx,o=rx"
+    #   loop: ["full", "part_1", "part_2", "part_3"]
+
+    - name: "Remove metamorphosis tmp file"
+      ansible.builtin.file:
+        path: "/tmp/content/Pune_Metamorphosis_HF-0{{ inventory_hostname[-1] }}.mp4"
+        state: absent
+    - name: "Copy Metamorphosis onto the server"
+      copy:
+        src: "{{ project_source }}pune_metamorphosis/compressed/Pune_Metamorphosis_HF-0{{ inventory_hostname[-1] }}.mp4"
+        dest: /mnt/data/
+        owner: root
+        group: root
+        mode: "u=rwx,g=rx,o=rx"
     # - name: "Copy Transformation onto the server"
     #   copy:
     #     src: "{{ project_source }}transformation/0{{ inventory_hostname[-1] }}-Transformations-Fehr.mp4"
@@ -48,5 +69,10 @@
         mode: "u=rwx,g=rx,o=rx"
       vars:
         video_id: "{{ inventory_hostname[-1] }}"
+      register: new_playlist
+    - name: Make Data Dir ro again
+      ansible.builtin.shell:
+        cmd: cardmount ro
     - name: Reboot
       ansible.builtin.reboot:
+    # when: new_playlist.changed

@@ -1,6 +1,6 @@
 ---
 - name: Roll out new project
-  hosts: hufo_info
+  hosts: info_player
   gather_facts: false
   vars:
     project_source: /home/leto/ak/hufo_videos/
@@ -19,19 +19,27 @@
 
     - name: "Copy Pune onto the server"
       copy:
-        src: "{{ project_source }}/pune_metamorphosis/info12.mp4"
+        src: "{{ project_source }}info_player_2/info_pune.mp4"
         dest: /mnt/data/info_pune.mp4
         owner: root
         group: root
         mode: "u=rwx,g=rx,o=rx"
 
-    - name: "Copy Wasserwelten onto the server"
+    - name: "Copy lullabies onto the server"
       copy:
-        src: "{{ project_source }}/Wasserwelten/info11.mp4"
-        dest: /mnt/data/info_wasser.mp4
+        src: "{{ project_source }}/videos/es_dunkelt_schon/info_lullaby.mp4"
+        dest: /mnt/data/info_lullaby.mp4
         owner: root
         group: root
         mode: "u=rwx,g=rx,o=rx"
+
+    # - name: "Copy Wasserwelten onto the server"
+    #   copy:
+    #     src: "{{ project_source }}/Wasserwelten/info11.mp4"
+    #     dest: /mnt/data/info_wasser.mp4
+    #     owner: root
+    #     group: root
+    #     mode: "u=rwx,g=rx,o=rx"
 
     - name: "Copy playlist.txt"
       ansible.builtin.template:
@@ -40,6 +48,9 @@
         owner: root
         group: root
         mode: "u=rwx,g=rx,o=rx"
+    - name: Mount Data directory
+      ansible.builtin.shell:
+        cmd: cardmount ro
 
     - name: Reboot
       ansible.builtin.reboot:
