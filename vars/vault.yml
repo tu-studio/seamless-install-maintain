@@ -1,1 +1,1 @@
-vault-hufo.yml
+ansible_become_pass: sudo_password_here
