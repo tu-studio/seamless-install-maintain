@@ -2,3 +2,4 @@
 ansible.cfg
 vault_pw
 test*
+.ansible
