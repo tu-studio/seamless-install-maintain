@@ -14,7 +14,7 @@
           {{ item.ip }} {{ item.name }}
         marker: "# {mark} tu-studio {{ item.name }}"
       loop:
-        - { name: Render1,     ip: 172.25.18.201 }
-        - { name: Render2,     ip: 172.25.18.202 }
-        - { name: Render3,     ip: 172.25.18.203 }
-        - { name: Playstation, ip: 172.25.18.204 }
+        - { name: Render1,     ip: 10.80.30.201}
+        - { name: Render2,     ip: 10.80.30.202}
+        - { name: Render3,     ip: 10.80.30.203}
+        - { name: Playstation, ip: 10.80.30.204}
