@@ -1,0 +1,20 @@
+---
+- name: Install /etc/hosts
+  hosts: [ renderer, player ]
+  vars_files:
+    - ../vars/program_versions.yml
+    - ../vars/vault.yml
+  tasks:
+
+    - name: Copy scripts for services
+      become: true
+      ansible.builtin.blockinfile:
+        path: /etc/hosts
+        block: |
+          {{ item.ip }} {{ item.name }}
+        marker: "# {mark} tu-studio {{ item.name }}"
+      loop:
+        - { name: Render1,     ip: 172.25.18.201 }
+        - { name: Render2,     ip: 172.25.18.202 }
+        - { name: Render3,     ip: 172.25.18.203 }
+        - { name: Playstation, ip: 172.25.18.204 }
