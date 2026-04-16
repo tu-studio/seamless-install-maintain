@@ -1,7 +1,7 @@
 renderer:
   hosts:
     renderer01:
-      ansible_host: 3900-ZG-RE-01.asg
+      ansible_host: 3900-ZG-RE-01
       ansible_user: tu-studio
       services:
         [
@@ -13,13 +13,13 @@ renderer:
       location: HUFO
       audio_driver: dante
     renderer02:
-      ansible_host: 3900-ZG-RE-02.asg
+      ansible_host: 3900-ZG-RE-02
       ansible_user: tu-studio
       services: [jack-connection-manager, twonder, audio-matrix]
       location: HUFO
       audio_driver: dante
     renderer03:
-      ansible_host: 3900-ZG-RE-03.asg
+      ansible_host: 3900-ZG-RE-03
       ansible_user: tu-studio
       services: [jack-connection-manager, twonder, audio-matrix]
       location: HUFO
@@ -28,7 +28,7 @@ renderer:
 player:
   hosts:
     playstation:
-      ansible_host: 3900-ZG-PS-01.asg
+      ansible_host: 3900-ZG-PS-01
       ansible_user: tu-studio
       services: [jack-connection-manager, gui, showcontrol]
       location: HUFO
@@ -37,30 +37,30 @@ player:
 video_player:
   hosts:
     video_player_1: 
-      ansible_host: 3910-PC-01.asg
+      ansible_host: 3910-PC-01
       ansible_user: root
     video_player_2: 
-      ansible_host: 3910-PC-02.asg
+      ansible_host: 3910-PC-02
       ansible_user: root
     video_player_3: 
-      ansible_host: 3910-PC-03.asg
+      ansible_host: 3910-PC-03
       ansible_user: root
     video_player_4: 
-      ansible_host: 3910-PC-04.asg
+      ansible_host: 3910-PC-04
       ansible_user: root
     video_player_5: 
-      ansible_host: 3910-PC-05.asg
+      ansible_host: 3910-PC-05
       ansible_user: root
     video_player_6: 
-      ansible_host: 3910-PC-06.asg
+      ansible_host: 3910-PC-06
       ansible_user: root
 
 info_player:
   hosts:
     info_player_1:
-      ansible_host: 3910-PC-07.asg
+      ansible_host: 3910-PC-07
       ansible_user: root
     info_player_2:
-      ansible_host: 3910-PC-08.asg
+      ansible_host: 3910-PC-08
       ansible_user: root
       
