@@ -14,7 +14,15 @@
           {{ item.ip }} {{ item.name }}
         marker: "# {mark} tu-studio {{ item.name }}"
       loop:
-        - { name: Render1,     ip: 172.25.18.201 }
-        - { name: Render2,     ip: 172.25.18.202 }
-        - { name: Render3,     ip: 172.25.18.203 }
-        - { name: Playstation, ip: 172.25.18.204 }
+        - { name: 3910-PC-01,    ip: 172.25.18.171 }
+        - { name: 3910-PC-02,    ip: 172.25.18.172 }
+        - { name: 3910-PC-03,    ip: 172.25.18.173 }
+        - { name: 3910-PC-04,    ip: 172.25.18.174 }
+        - { name: 3910-PC-05,    ip: 172.25.18.175 }
+        - { name: 3910-PC-06,    ip: 172.25.18.176 }
+        - { name: 3910-PC-07,    ip: 172.25.18.177 }
+        - { name: 3910-PC-08,    ip: 172.25.18.178 }
+        - { name: 3900-ZG-PS-01, ip: 172.25.18.204 }
+        - { name: 3900-ZG-RE-01, ip: 72.25.18.201 }
+        - { name: 3900-ZG-RE-02, ip: 72.25.18.202 }
+        - { name: 3900-ZG-RE-03, ip: 72.25.18.203 }
