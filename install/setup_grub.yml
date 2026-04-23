@@ -8,8 +8,8 @@
     - name: Change Grub CMDLine linux default
       ansible.builtin.lineinfile:
         path: /etc/default/grub
-        regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
-        line: GRUB_CMDLINE_LINUX_DEFAULT="quiet cpufreq.default_governor=performance"
+        regexp: "^GRUB_CMDLINE_LINUX_DEFAULT="
+        line: GRUB_CMDLINE_LINUX_DEFAULT="quiet cpufreq.default_governor=performance pcie_aspm=off"
         # line: GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_pstate=disable cpufreq.default_governor=performance"
       register: changed_grub
     - name: Update Grub
@@ -19,4 +19,3 @@
     - name: Reboot
       ansible.builtin.reboot:
       when: changed_grub.changed
-        

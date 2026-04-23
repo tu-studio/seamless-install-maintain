@@ -2,7 +2,7 @@
 - name: Install configs
   hosts: [renderer, player]
   vars:
-    repo_dir: /home/{{ ansible_user_id }}/configs
+    repo_dir: /home/{{ ansible_facts["user_id"] }}/configs
   vars_files:
     - ../vars/program_versions.yml
     - ../vars/vault.yml

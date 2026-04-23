@@ -2,7 +2,7 @@
 - name: Install Wonder
   hosts: all
   vars:
-    repo_dir: /home/{{ ansible_user_id }}/wonder
+    repo_dir: /home/{{ ansible_facts["user_id"] }}/wonder
     twonder_service_name: twonder
     cwonder_service_name: cwonder
     host_has_twonder: "{{ (services is defined and twonder_service_name in services )}}"
@@ -76,10 +76,28 @@
         masked: false
       when: host_has_cwonder
 
-    - name: Systemd enable twonder service
+    # - name: Systemd enable twonder target
+    #   ansible.builtin.systemd:
+    #     service: twonder.target
+    #     enabled: true
+    #     scope: user
+    #     masked: false
+    #   when: host_has_twonder
+
+    - name: Disable old twonder service
       ansible.builtin.systemd:
         service: twonder.service
         enabled: true
         scope: user
         masked: false
+      when: host_has_twonder
+
+    - name: Systemd enable systemd-networkd-wait-online.service
+      ansible.builtin.systemd:
+        service: "{{ item }}"
+        enabled: true
+        scope: system
+        masked: false
+      become: true
+      loop: [systemd-networkd.service, systemd-networkd-wait-online.service]
       when: host_has_twonder

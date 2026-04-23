@@ -2,13 +2,12 @@
 - name: Install osc-kreuz
   hosts: all
   vars:
-    repo_dir: /home/{{ ansible_user_id }}/osc-kreuz
+    repo_dir: /home/{{ ansible_facts["user_id"] }}/osc-kreuz
     service_name: osc-kreuz
   vars_files:
     - ../vars/program_versions.yml
     - ../vars/vault.yml
   tasks:
-
     - name: Only install osc-kreuz on devices that are concerned
       ansible.builtin.meta: end_host
       when: not (services is defined) or (service_name not in services)
@@ -49,6 +48,15 @@
       ansible.builtin.systemd:
         daemon_reload: true
         scope: user
+
+    - name: Systemd enable systemd-networkd-wait-online.service
+      ansible.builtin.systemd:
+        service: "{{ item }}"
+        enabled: true
+        scope: system
+        masked: false
+      loop: [systemd-networkd.service, systemd-networkd-wait-online.service]
+
     - name: Systemd enable service
       ansible.builtin.systemd:
         service: osc-kreuz.service

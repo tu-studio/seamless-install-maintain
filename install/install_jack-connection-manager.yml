@@ -3,7 +3,7 @@
   hosts: all
   vars:
     service_name: jack-connection-manager
-    repo_dir: /home/{{ ansible_user_id }}/jack-connection-manager
+    repo_dir: /home/{{ ansible_facts["user_id"] }}/jack-connection-manager
   vars_files:
     - ../vars/vault.yml
     - ../vars/program_versions.yml
