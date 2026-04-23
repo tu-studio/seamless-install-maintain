@@ -1,0 +1,28 @@
+---
+- name: Install /etc/hosts
+  hosts: [ renderer, player ]
+  vars_files:
+    - ../vars/program_versions.yml
+    - ../vars/vault.yml
+  tasks:
+
+    - name: Copy scripts for services
+      become: true
+      ansible.builtin.blockinfile:
+        path: /etc/hosts
+        block: |
+          {{ item.ip }} {{ item.name }}
+        marker: "# {mark} tu-studio {{ item.name }}"
+      loop:
+        - { name: 3910-PC-01.asg,    ip: 172.25.18.171 }
+        - { name: 3910-PC-02.asg,    ip: 172.25.18.172 }
+        - { name: 3910-PC-03.asg,    ip: 172.25.18.173 }
+        - { name: 3910-PC-04.asg,    ip: 172.25.18.174 }
+        - { name: 3910-PC-05.asg,    ip: 172.25.18.175 }
+        - { name: 3910-PC-06.asg,    ip: 172.25.18.176 }
+        - { name: 3910-PC-07.asg,    ip: 172.25.18.177 }
+        - { name: 3910-PC-08.asg,    ip: 172.25.18.178 }
+        - { name: 3900-ZG-PS-01.asg, ip: 172.25.18.204 }
+        - { name: 3900-ZG-RE-01.asg, ip: 172.25.18.201 }
+        - { name: 3900-ZG-RE-02.asg, ip: 172.25.18.202 }
+        - { name: 3900-ZG-RE-03.asg, ip: 172.25.18.203 }
