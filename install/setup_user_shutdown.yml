@@ -14,10 +14,10 @@
       ansible.builtin.user:
         name: "{{ ansible_user }}"
         groups: shutdown
-        append: yes
+        append: true
     - name: Allow the shutdown group to use shutdown
       community.general.sudoers:
         name: allow-shutdown
         state: present
         group: shutdown
-        commands: /sbin/shutdown
+        commands: [/sbin/shutdown, /sbin/reboot, /sbin/poweroff]
