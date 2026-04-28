@@ -7,6 +7,7 @@
     cwonder_service_name: cwonder
     host_has_twonder: "{{ (services is defined and twonder_service_name in services )}}"
     host_has_cwonder: "{{ (services is defined and cwonder_service_name in services )}}"
+
   vars_files:
     - ../vars/program_versions.yml
     - ../vars/vault.yml
@@ -68,6 +69,24 @@
         daemon_reload: true
         scope: user
 
+    - name: Create twonder target
+      # to the observant observer this might look overly complicated
+      # and hacky. this is because it is!
+      # it builds the required twonder strings by
+      # concatenating the substrings in convoluted ways
+      copy:
+        dest: /etc/systemd/user/twonder.target
+        content: |
+          [Unit]
+          Description=Twonders
+          Requires={{ ["twonder@"] | product(range(n_twonders))
+          | map('join') | product([".service"])
+          | map('join') | join(" ") }}
+          [Install]
+          WantedBy=default.target
+      become: true
+      when: n_twonders is defined
+
     - name: Systemd enable cwonder service
       ansible.builtin.systemd:
         service: cwonder.service
@@ -76,28 +95,18 @@
         masked: false
       when: host_has_cwonder
 
-    # - name: Systemd enable twonder target
-    #   ansible.builtin.systemd:
-    #     service: twonder.target
-    #     enabled: true
-    #     scope: user
-    #     masked: false
-    #   when: host_has_twonder
-
-    - name: Disable old twonder service
+    - name: Systemd enable twonder target
       ansible.builtin.systemd:
-        service: twonder.service
+        service: twonder.target
         enabled: true
         scope: user
         masked: false
       when: host_has_twonder
 
-    - name: Systemd enable systemd-networkd-wait-online.service
+    - name: Disable old twonder service
       ansible.builtin.systemd:
-        service: "{{ item }}"
-        enabled: true
-        scope: system
+        service: twonder.service
+        enabled: false
+        scope: user
         masked: false
-      become: true
-      loop: [systemd-networkd.service, systemd-networkd-wait-online.service]
       when: host_has_twonder

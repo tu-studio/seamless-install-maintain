@@ -1,0 +1,42 @@
+---
+- name: Install user-network-online.target
+  hosts: all
+  vars_files:
+    - ../vars/vault.yml
+  tasks:
+    # creates a bridge to start a user service to check that targets are online
+    - name: Create User Target
+      copy:
+        dest: /etc/systemd/user/user-network-online.service
+        content: |
+          [Unit]
+          Description=User Wait for Network to be Configured
+
+          [Service]
+          Type=oneshot
+          ExecStart=/lib/systemd/systemd-networkd-wait-online -4 --any
+          RemainAfterExit=yes
+
+          [Install]
+          WantedBy=default.target
+      become: true
+
+    - name: Systemd daemon reload system
+      ansible.builtin.systemd:
+        daemon_reload: true
+      become: true
+
+    - name: Systemd daemon reload user
+      ansible.builtin.systemd:
+        daemon_reload: true
+        scope: user
+
+    - name: Systemd enable wait online services
+      ansible.builtin.systemd:
+        service: "{{ item }}"
+        enabled: true
+        masked: false
+      become: true
+      loop:
+        - systemd-networkd.service
+        - systemd-networkd-wait-online.service
