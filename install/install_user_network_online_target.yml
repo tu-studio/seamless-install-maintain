@@ -1,5 +1,5 @@
 ---
-- name: Install user-network-online.target
+- name: Install user-network-online.service
   hosts: all
   vars_files:
     - ../vars/vault.yml
@@ -19,6 +19,19 @@
 
           [Install]
           WantedBy=default.target
+      become: true
+
+    - name: Create ethernet network config
+      # this is needed so systemd-networkd is able to manage all ethernet interfaces, so systemd-networkd-wait-online can work
+      copy:
+        dest: /etc/systemd/network/80-ethernet.network
+        content: |
+          [Match]
+          Type=ether
+
+          [Network]
+          DHCP=yes
+        mode: 644
       become: true
 
     - name: Systemd daemon reload system
