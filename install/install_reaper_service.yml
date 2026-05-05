@@ -25,8 +25,8 @@
       content: |
         [Unit]
         Description=REAPER
-        After=network-online.target graphical-session.target jack.service dbus.service
-        Wants=network-online.target graphical-session.target
+        After=user-network-online.service graphical-session.target jack.service dbus.service
+        Wants=user-network-online.service graphical-session.target
 
         [Service]
         Type=simple
