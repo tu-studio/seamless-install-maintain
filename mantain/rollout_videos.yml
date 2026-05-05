@@ -3,76 +3,69 @@
   hosts: video_player
   gather_facts: false
   vars:
-    project_source: /home/leto/ak/hufo_videos/videos/
+    project_source: /home/leto/ak/seamless/hufo_videos/videos/
+    target_content_dir: /home/kiosk/content/
   tasks:
-    - name: Mount Data directory
-      ansible.builtin.shell:
-        cmd: cardmount rw
-
     # - name: "Copy Pagtatahip onto the server"
     #   copy:
     #     src: "{{ project_source }}pagtatahip/pagtatahip_{{ inventory_hostname[-1] }}.mp4"
-    #     dest: /mnt/data/
-    #     owner: root
-    #     group: root
+    #     dest: "{{ target_content_dir  }}"
+    #     owner: kiosk
+    #     group: avm
     #     mode: "u=rwx,g=rx,o=rx"
 
     # - name: "Copy lullabies onto the server"
     #   copy:
     #     src: "{{ project_source }}es_dunkelt_schon/{{ item }}/lullabies_{{item}}_{{ inventory_hostname[-1] }}.mp4"
-    #     dest: /mnt/data/
-    #     owner: root
-    #     group: root
+    #     dest: "{{ target_content_dir  }}"
+    #     owner: kiosk
+    #     group: avm
     #     mode: "u=rwx,g=rx,o=rx"
     #   loop: ["full", "part_1", "part_2", "part_3"]
 
-    - name: "Remove metamorphosis tmp file"
-      ansible.builtin.file:
-        path: "/tmp/content/Pune_Metamorphosis_HF-0{{ inventory_hostname[-1] }}.mp4"
-        state: absent
     - name: "Copy Metamorphosis onto the server"
       copy:
         src: "{{ project_source }}pune_metamorphosis/compressed/Pune_Metamorphosis_HF-0{{ inventory_hostname[-1] }}.mp4"
-        dest: /mnt/data/
-        owner: root
-        group: root
+        dest: "{{ target_content_dir  }}"
+        owner: kiosk
+        group: avm
         mode: "u=rwx,g=rx,o=rx"
+
     # - name: "Copy Transformation onto the server"
     #   copy:
     #     src: "{{ project_source }}transformation/0{{ inventory_hostname[-1] }}-Transformations-Fehr.mp4"
-    #     dest: /mnt/data/
-    #     owner: root
-    #     group: root
+    #     dest: "{{ target_content_dir  }}"
+    #     owner: kiosk
+    #     group: avm
     #     mode: "u=rwx,g=rx,o=rx"
     # - name: "Copy Wasserwelten onto the server"
     #   copy:
     #     src: "{{ project_source }}/Wasserwelten/wasser_{{ inventory_hostname[-1] }}.mov"
-    #     dest: /mnt/data/
-    #     owner: root
-    #     group: root
+    #     dest: "{{ target_content_dir  }}"
+    #     owner: kiosk
+    #     group: avm
     #     mode: "u=rwx,g=rx,o=rx"
 
     # - name: "Copy Sculputral Beatings onto the server"
     #   copy:
     #     src: "{{ project_source }}/sculptural_beatings/sculptur_{{ inventory_hostname[-1] }}.mov"
-    #     dest: /mnt/data/
-    #     owner: root
-    #     group: root
+    #     dest: "{{ target_content_dir  }}"
+    #     owner: kiosk
+    #     group: avm
     #     mode: "u=rwx,g=rx,o=rx"
 
     - name: "Copy playlist.txt"
       ansible.builtin.template:
         src: playlist.txt.j2
-        dest: /mnt/data/playlist.txt
-        owner: root
-        group: root
-        mode: "u=rwx,g=rx,o=rx"
+        dest: "{{ target_content_dir }}/playlist.txt"
+        owner: tu-studio
+        group: avm
+        mode: "u=rwx,g=rwx,o=rx"
       vars:
         video_id: "{{ inventory_hostname[-1] }}"
-      register: new_playlist
-    - name: Make Data Dir ro again
-      ansible.builtin.shell:
-        cmd: cardmount ro
-    - name: Reboot
-      ansible.builtin.reboot:
+    # - name: Make Data Dir ro again
+    #   ansible.builtin.shell:
+    #     cmd: cardmount ro
+    # - name: Reboot
+    #   ansible.builtin.reboot:
     # when: new_playlist.changed
