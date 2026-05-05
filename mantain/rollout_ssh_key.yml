@@ -1,13 +1,9 @@
 ---
 - name: Roll out new project
-  hosts: video_hosts
-  gather_facts: false
+  hosts: video_player
   tasks:
-    # - name: Mount Data directory
-    #   ansible.builtin.shell:
-    #     cmd: cardmount rw
-
     - name: "Add to authorized keys"
-      ansible.builtin.lineinfile:
-        path: /root/.ssh/authorized_keys
-        line: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKja+vcw8BnbD7hGj03+xoQ0ncAy+X5DFYAQDIT5iewK faressc@menshiki
+      ansible.posix.authorized_key:
+        user: "{{ ansible_facts['user_id'] }}"
+        state: present
+        key: "{{ lookup('file', key) }}"
