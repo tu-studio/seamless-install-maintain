@@ -13,9 +13,14 @@ renderer:
         ]
       location: EN325
       audio_driver: dante
+      audio_backend: pipewire
+      n_twonders: 4
+
     wintermute:
       ansible_host: wintermute.ak.tu-berlin.de
       ansible_user: studio
       services: [jack-connection-manager, twonder, audio-matrix]
       location: EN325
       audio_driver: dante
+      audio_backend: pipewire
+      n_twonders: 8
