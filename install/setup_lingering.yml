@@ -6,5 +6,5 @@
   tasks:
     - name: Enable Linger for User
       ansible.builtin.command:
-        cmd: loginctl enable-linger {{ ansible_user_id }}
+        cmd: loginctl enable-linger {{ ansible_facts["user_id"] }}
       become: true

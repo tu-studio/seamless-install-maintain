@@ -2,7 +2,7 @@
 - name: Install Madi Drivers
   hosts: all
   vars:
-    repo_dir: /home/{{ ansible_user_id }}/madifx-driver
+    repo_dir: /home/{{ ansible_facts["user_id"] }}/madifx-driver
   vars_files:
     - ../vars/vault.yml
   tasks:
@@ -19,10 +19,10 @@
 
     - name: Clone Repo
       ansible.builtin.git:
-        repo: https://github.com/tu-studio/madifx.git
+        repo: https://github.com/adiknoth/madifx.git
         dest: "{{ repo_dir }}"
         single_branch: true
-        version: HDSPe_MADI_FX
+        version: master
         update: true
 
     - name: Make Install
