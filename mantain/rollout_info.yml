@@ -1,52 +1,53 @@
 ---
-- name: Roll out new project
+- name: Roll out info video
   hosts: info_player
   gather_facts: false
   vars:
     project_source: /home/leto/ak/hufo_videos/
+    target_content_dir: /home/kiosk/content/
   tasks:
-    - name: Mount Data directory
-      ansible.builtin.shell:
-        cmd: cardmount rw
-
     # - name: "Copy Metamorphosis onto the server"
     #   copy:
     #     src: "{{ project_source }}pune_metamorphosis/Pune_Metamorphosis_HF-0{{ inventory_hostname[-1] }}.mp4"
-    #     dest: /mnt/data/
-    #     owner: root
-    #     group: root
+    #     dest: "{{ target_content_dir  }}"
+    #     owner: kiosk
+    #     group: avm
     #     mode: "u=rwx,g=rx,o=rx"
     # - name: "Copy Transformation onto the server"
     #   copy:
     #     src: "{{ project_source }}transformation/0{{ inventory_hostname[-1] }}-Transformations-Fehr.mp4"
-    #     dest: /mnt/data/
-    #     owner: root
-    #     group: root
+    #     dest: "{{ target_content_dir  }}"
+    #     owner: kiosk
+    #     group: avm
     #     mode: "u=rwx,g=rx,o=rx"
     # - name: "Copy Wasserwelten onto the server"
     #   copy:
     #     src: "{{ project_source }}/Wasserwelten/wasser_{{ inventory_hostname[-1] }}.mov"
-    #     dest: /mnt/data/
-    #     owner: root
-    #     group: root
+    #     dest: "{{ target_content_dir  }}"
+    #     owner: kiosk
+    #     group: avm
     #     mode: "u=rwx,g=rx,o=rx"
 
     # - name: "Copy Sculputral Beatings onto the server"
     #   copy:
     #     src: "{{ project_source }}/sculptural_beatings/sculptur_{{ inventory_hostname[-1] }}.mov"
-    #     dest: /mnt/data/
-    #     owner: root
-    #     group: root
+    #     dest: "{{ target_content_dir  }}"
+    #     owner: kiosk
+    #     group: avm
     #     mode: "u=rwx,g=rx,o=rx"
 
     - name: "Copy playlist.txt"
       ansible.builtin.template:
         src: playlist_info.txt.j2
-        dest: /mnt/data/playlist.txt
-        owner: root
-        group: root
+        dest: "{{ target_content_dir }}/playlist.txt"
+        owner: kiosk
+        group: avm
         mode: "u=rwx,g=rx,o=rx"
       vars:
         video_id: "{{ inventory_hostname[-1] }}"
+      register: new_playlist
+    - name: Reboot
+      ansible.builtin.reboot:
+      when: new_playlist.changed
     # - name: Reboot
     #   ansible.builtin.reboot:

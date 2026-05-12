@@ -1,4 +1,7 @@
 # sudo password of the user
-ansible_become_pass: sudo_password_here
+ansible_become_pass: "sudo_password_here"
 # github access token to add this machines ssh key to the github machine user of the studio to be able to pull private repos
-github_token: github_token_here
+github_token: "github_token_here"
+
+# hash of password for avm user in hufo, only needed for running the "hufo_avm_user.yml" playbook
+hufo_avm_password_hash: "password_hash_here"

@@ -4,3 +4,4 @@ vault_pw
 test*
 .ansible
 vars/vault.yml
+vars/vault*.yml

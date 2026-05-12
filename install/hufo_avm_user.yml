@@ -1,0 +1,22 @@
+---
+- name: Create a user with sudo privileges
+  hosts: all
+  become: true
+  vars_files:
+    - ../vars/vault.yml
+  vars:
+    username: avm
+    password: "{{ hufo_avm_password_hash }}"
+  tasks:
+    - name: Create a new user
+      ansible.builtin.user:
+        name: "{{ username }}"
+        password: "{{ password }}"
+        shell: /bin/bash
+        state: present
+
+    - name: Add user to sudo group
+      ansible.builtin.user:
+        name: "{{ username }}"
+        groups: sudo # On Debian/Ubuntu; for CentOS/RHEL, use 'wheel'
+        append: true

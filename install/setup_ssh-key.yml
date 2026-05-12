@@ -11,8 +11,8 @@
       ansible.builtin.shell: cat ~/.ssh/id_rsa.pub
       register: ssh_pub_key
     - name: Authorize key with GitHub
-      delegate_to: localhost
+      # delegate_to: localhost
       community.general.github_key:
         name: "{{ inventory_hostname }}"
         token: "{{ github_token }}"
-        pubkey: '{{ ssh_pub_key.stdout }}'
+        pubkey: "{{ ssh_pub_key.stdout }}"
