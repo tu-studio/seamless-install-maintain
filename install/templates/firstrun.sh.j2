@@ -23,18 +23,6 @@ sudo chmod 600 /home/{{ ansible_user }}/.ssh/authorized_keys
 
 
 
-# Check if installation takes place  in .asg network and set proxy accordingly
-if hostname -I | grep -qE '172.25.1[6789]' ; then
-  echo "We are in .asg network, will setup proxy now"avm
-  sudo sh -c 'cat << EOF > /etc/apt/apt.conf.d/95proxies
-Acquire::http::Proxy "http://172.16.10.122:8888";
-Acquire::https::Proxy "http://172.16.10.122:8888";
-EOF'
-# Systemwide for now
-export http_proxy=http://172.16.10.122:8888
-export https_proxy=http://172.16.10.122:8888
-fi
-
 ##################
 ## END SOFTWARE SETUP ##########################################################
 

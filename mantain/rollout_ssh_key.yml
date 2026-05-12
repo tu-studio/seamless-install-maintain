@@ -1,5 +1,5 @@
 ---
-- name: Roll out new project
+- name: Rollout ssh key to devices
   hosts: video_player
   tasks:
     - name: "Add to authorized keys"

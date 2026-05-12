@@ -1,0 +1,4 @@
+# sudo password of the user
+ansible_become_pass: sudo_password_here
+# github access token to add this machines ssh key to the github machine user of the studio to be able to pull private repos
+github_token: github_token_here

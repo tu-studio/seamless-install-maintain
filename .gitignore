@@ -3,3 +3,4 @@ ansible.cfg
 vault_pw
 test*
 .ansible
+vars/vault.yml
