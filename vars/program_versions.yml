@@ -7,3 +7,8 @@ wonder_version: main
 showcontrol_version: main
 iem_plugins_version: 1.14.3
 seamless_plugins_version: 1.0.0
+
+# REAPER install needs the archive_name and the download url
+reaper_archive_name: reaper739_linux_x86_64.tar.xz
+reaper_url: https://dlcf.reaper.fm/7.x/reaper739_linux_x86_64.tar.xz
+
