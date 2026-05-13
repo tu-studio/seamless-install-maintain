@@ -17,13 +17,19 @@
 - name: Setup lingering user
   ansible.builtin.import_playbook: setup_lingering.yml
 
+- name: Setup user shutdown
+  ansible.builtin.import_playbook: setup_user_shutdown.yml
+
+- name: Install user network online target
+  ansible.builtin.import_playbook: install_user_network_online_target.yml
+
 - name: Install seamless configs
   ansible.builtin.import_playbook: install_configs.yml
 
-- name: Install audio drivers
+- name: Install MADI drivers
   ansible.builtin.import_playbook: install_madi_driver.yml
 
-- name: Install audio drivers
+- name: Install dante drivers
   ansible.builtin.import_playbook: install_dante_driver.yml
 
 - name: Install jackd

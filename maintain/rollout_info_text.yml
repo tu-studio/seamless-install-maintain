@@ -4,53 +4,48 @@
   gather_facts: false
   vars:
     project_source: /home/leto/ak/hufo_videos/
+    target_content_dir: /home/kiosk/content/
   tasks:
-    - name: Mount Data directory
-      ansible.builtin.shell:
-        cmd: cardmount rw
-
     # - name: "Copy Metamorphosis onto the server"
     #   copy:
     #     src: "{{ project_source }}pune_metamorphosis/Pune_Metamorphosis_HF-0{{ inventory_hostname[-1] }}.mp4"
-    #     dest: /mnt/data/
-    #     owner: root
-    #     group: root
-    #     mode: "u=rwx,g=rx,o=rx"
+    #     dest: "{{ target_content_dir  }}"
+    #     owner: kiosk
+    #     group: avm
+    #     mode: "u=rwx,g=rwx,o=rx"
 
     - name: "Copy Pune onto the server"
       copy:
         src: "{{ project_source }}info_player_2/info_pune.mp4"
-        dest: /mnt/data/info_pune.mp4
-        owner: root
-        group: root
-        mode: "u=rwx,g=rx,o=rx"
+        dest: "{{ target_content_dir  }}/info_pune.mp4"
+        owner: kiosk
+        group: avm
+        mode: "u=rwx,g=rwx,o=rx"
 
     - name: "Copy lullabies onto the server"
       copy:
         src: "{{ project_source }}/videos/es_dunkelt_schon/info_lullaby.mp4"
-        dest: /mnt/data/info_lullaby.mp4
-        owner: root
-        group: root
-        mode: "u=rwx,g=rx,o=rx"
+        dest: "{{ target_content_dir  }}/info_lullaby.mp4"
+        owner: kiosk
+        group: avm
+        mode: "u=rwx,g=rwx,o=rx"
 
     # - name: "Copy Wasserwelten onto the server"
     #   copy:
     #     src: "{{ project_source }}/Wasserwelten/info11.mp4"
-    #     dest: /mnt/data/info_wasser.mp4
-    #     owner: root
-    #     group: root
-    #     mode: "u=rwx,g=rx,o=rx"
+    #     dest: "{{ target_content_dir  }}"info_wasser.mp4
+    #     owner: kiosk
+    #     group: avm
+    #     mode: "u=rwx,g=rwx,o=rx"
 
     - name: "Copy playlist.txt"
       ansible.builtin.template:
         src: playlist_info.txt.j2
-        dest: /mnt/data/playlist.txt
-        owner: root
-        group: root
-        mode: "u=rwx,g=rx,o=rx"
-    - name: Mount Data directory
-      ansible.builtin.shell:
-        cmd: cardmount ro
-
+        dest: "{{ target_content_dir  }}/playlist.txt"
+        owner: kiosk
+        group: avm
+        mode: "u=rwx,g=rwx,o=rx"
+      register: new_playlist
     - name: Reboot
       ansible.builtin.reboot:
+      when: new_playlist.changed

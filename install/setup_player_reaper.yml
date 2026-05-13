@@ -2,15 +2,17 @@
 - name: Setup Player PC
   hosts: player
   vars:
+    sws_archive: ~/Downloads/sws-2.14.0.3-Linux-x86_64.tar.xz
+    # reaper archive name and url are specified in program_versions.yml
     home_dir: /home/{{ ansible_user_id }}/
     dir: /home/{{ ansible_user_id }}/reaper
-    archive_name: reaper739_linux_x86_64.tar.xz
-    url: https://dlcf.reaper.fm/7.x/reaper739_linux_x86_64.tar.xz
-
-    sws_file: ~/Downloads/sws-2.14.0.3-Linux-x86_64.tar.xz
     reaper_config_dir: "{{ home_dir }}/.config/REAPER"
 
+    systemd_service_name: reaper
+
   vars_files:
+    - ../vars/vault.yml
+    - ../vars/program_versions.yml
     - ../vars/vault.yml
   tasks:
     # disable systemd services
@@ -37,14 +39,14 @@
     # install REAPER
     - name: Download REAPER
       ansible.builtin.get_url:
-        url: "{{ url }}"
+        url: "{{ reaper_url }}"
         dest: "{{ home_dir }}"
       register: reaper_download
 
     - name: Extract reaper archive
       ansible.builtin.unarchive:
         remote_src: true
-        src: "{{ home_dir }}/{{ archive_name }}"
+        src: "{{ home_dir }}/{{ reaper_archive_name }}"
         dest: "{{ home_dir }}"
       when: reaper_download.changed
 
@@ -57,7 +59,43 @@
 
     - name: install sws extensions (from local folder)
       ansible.builtin.unarchive:
-        src: "{{ sws_file }}"
+        src: "{{ sws_archive }}"
         dest: "{{ reaper_config_dir }}"
 
-    # - name: Setup
+    - name: Remove desktop autostart file
+      ansible.builtin.file:
+        path: "~/.config/autostart/cockos-reaper.desktop"
+        state: absent
+
+    - name: Create systemd service file
+      ansible.builtin.copy:
+        dest: "/etc/systemd/user/{{ systemd_service_name }}.service"
+        content: |
+          [Unit]
+          Description=REAPER
+          After=user-network-online.service graphical-session.target jack.service dbus.service
+          Wants=user-network-online.service graphical-session.target
+
+          [Service]
+          Type=simple
+          ExecStart=/opt/REAPER/reaper
+          Restart=on-failure
+
+          [Install]
+          WantedBy=default.target
+        mode: u=rw,g=r,o=r
+      become: true
+
+    - name: Systemd daemon reload
+      ansible.builtin.systemd:
+        daemon_reload: true
+        scope: user
+
+    - name: Systemd enable service
+      ansible.builtin.systemd:
+        service: "{{ systemd_service_name }}.service"
+        enabled: true
+        scope: user
+        masked: false
+
+      # - name: Setup
