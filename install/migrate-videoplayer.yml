@@ -1,0 +1,146 @@
+# single use for migrating from kiosk to tu-studio
+---
+- name: migrate-videoplayer
+  hosts: [ video_player_3, video_player_4, video_player_5, video_player_6]
+  become: true
+  vars_files:
+    - ../vars/vault.yml
+  tasks:
+
+    - name: Copy entire .config folder from kiosk to tu-studio
+      ansible.builtin.copy:
+        src: /home/kiosk/.config/
+        dest: /home/tu-studio/.config/
+        remote_src: true
+        owner: tu-studio
+        group: avm
+        mode: '0755'
+    - name: Ensure correct ownership on .config
+      ansible.builtin.file:
+        path: /home/tu-studio/.config
+        owner: tu-studio
+        group: avm
+        recurse: true
+
+    - name: Copy mpv config folder from kiosk to tu-studio
+      ansible.builtin.copy:
+        src: /home/kiosk/.config/mpv/
+        dest: /home/tu-studio/.config/mpv/
+        remote_src: true
+        owner: tu-studio
+        group: avm
+        mode: '0755'
+    - name: Ensure correct ownership on mpv config recursively
+      ansible.builtin.file:
+        path: /home/tu-studio/.config/mpv
+        owner: tu-studio
+        group: avm
+        recurse: true
+    - name: Update include path in mpv config
+      ansible.builtin.lineinfile:
+        path: /home/tu-studio/.config/mpv/mpv.conf
+        regexp: '^include=/home/kiosk/content/mpv.conf'
+        line: 'include=/home/tu-studio/content/mpv.conf'
+        state: present
+
+    - name: Copy content folder from kiosk to tu-studio
+      ansible.builtin.copy:
+        src: /home/kiosk/content/
+        dest: /home/tu-studio/content/
+        remote_src: true
+        owner: tu-studio
+        group: avm
+        mode: '0755'
+    - name: Ensure correct ownership on content recursively
+      ansible.builtin.file:
+        path: /home/tu-studio/content
+        owner: tu-studio
+        group: avm
+        recurse: true
+
+    - name: Rename kiosk startup desktop file to tu-studio
+      ansible.builtin.command:
+        cmd: mv /home/tu-studio/.config/autostart/kiosk-startup.desktop /home/tu-studio/.config/autostart/tu-studio-startup.desktop
+        removes: /home/tu-studio/.config/autostart/kiosk-startup.desktop
+        creates: /home/tu-studio/.config/autostart/tu-studio-startup.desktop
+    - name: Ensure correct ownership on autostart folder recursively
+      ansible.builtin.file:
+        path: /home/tu-studio/.config/autostart
+        owner: tu-studio
+        group: avm
+        recurse: true
+    - name: Update Name in autostart desktop file
+      ansible.builtin.lineinfile:
+        path: /home/tu-studio/.config/autostart/tu-studio-startup.desktop
+        regexp: '^Name=Kiosk startup'
+        line: 'Name=Tu-studio startup'
+        state: present
+    - name: Update Exec path in autostart desktop file
+      ansible.builtin.lineinfile:
+        path: /home/tu-studio/.config/autostart/tu-studio-startup.desktop
+        regexp: '^Exec=/home/kiosk/content/startup.sh'
+        line: 'Exec=/home/tu-studio/content/startup.sh'
+        state: present
+
+    # Alternative direct shell approach to safely adjust the groups:
+    - name: Remove kiosk from autologin group via gpasswd
+      ansible.builtin.command:
+        cmd: gpasswd -d kiosk autologin
+      failed_when: false # Prevents failing if kiosk wasn't in the group to begin with
+
+    - name: Add tu-studio to autologin group
+      ansible.builtin.user:
+        name: tu-studio
+        groups: autologin
+        append: true
+
+
+    - name: Set autologin user in main LightDM config
+      ansible.builtin.lineinfile:
+        path: /etc/lightdm/lightdm.conf
+        regexp: '^#?autologin-user='
+        line: 'autologin-user=tu-studio'
+        insertafter: '^\[Seat:\*\]'
+        state: present
+    - name: Set autologin timeout in main LightDM config
+      ansible.builtin.lineinfile:
+        path: /etc/lightdm/lightdm.conf
+        regexp: '^#?autologin-user-timeout='
+        line: 'autologin-user-timeout=0'
+        insertafter: '^\[Seat:\*\]'
+        state: present
+
+    - name: Rename user in service
+      ansible.builtin.lineinfile:
+        state: present
+        path: /etc/systemd/system/mpv-udp-bridge.service
+        regexp: '^User=kiosk'
+        line: 'User=tu-studio'
+      notify: Restart mpv service
+
+    # - name: Remove kiosk mpv config directory
+    #   ansible.builtin.file:
+    #     path: /home/kiosk/.config
+    #     state: absent
+    # - name: Remove kiosk content directory
+    #   ansible.builtin.file:
+    #     path: /home/kiosk/content
+    #     state: absent
+    # - name: Remove tu-studio autostart directory if it exists
+    #   ansible.builtin.file:
+    #     path: /home/tu-studio/.config/autostart
+    #     state: absent
+    # - name: Remove kiosk autostart directory
+    #   ansible.builtin.file:
+    #     path: /home/kiosk/.config/autostart
+    #     state: absent
+
+
+  handlers:
+    - name: Restart mpv service
+      ansible.builtin.systemd:
+        name: mpv-udp-bridge.service
+        state: restarted
+        daemon_reload: true
+        enabled: true
+        scope: system
