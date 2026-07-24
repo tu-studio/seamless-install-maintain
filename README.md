@@ -1,3 +1,14 @@
+# Getting started
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+
+# run a playbook
+ansible-playbook -i <your_inventory>.yml <playbook_name>.yml
+```
+
 # Full Install
 
 ## Debian installation
