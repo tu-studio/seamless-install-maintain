@@ -3,13 +3,7 @@ renderer:
     renderer01:
       ansible_host: 3900-ZG-RE-01.tu-ctrl
       ansible_user: tu-studio
-      services:
-        [
-          osc-kreuz,
-          jack-connection-manager,
-          audio-matrix,
-          ambisonics,
-        ]
+      services: [osc-kreuz, jack-connection-manager, audio-matrix, ambisonics]
       location: HUFO
       audio_driver: dante
     renderer02:
@@ -27,7 +21,6 @@ renderer:
       audio_driver: dante
       n_twonders: 8
 
-
 player:
   hosts:
     playstation:
@@ -39,22 +32,22 @@ player:
 
 video_player:
   hosts:
-    video_player_1: 
+    video_player_1:
       ansible_host: 3910-PC-01
       ansible_user: tu-studio
-    video_player_2: 
+    video_player_2:
       ansible_host: 3910-PC-02
       ansible_user: tu-studio
-    video_player_3: 
+    video_player_3:
       ansible_host: 3910-PC-03
       ansible_user: tu-studio
-    video_player_4: 
+    video_player_4:
       ansible_host: 3910-PC-04
       ansible_user: tu-studio
-    video_player_5: 
+    video_player_5:
       ansible_host: 3910-PC-05
       ansible_user: tu-studio
-    video_player_6: 
+    video_player_6:
       ansible_host: 3910-PC-06
       ansible_user: tu-studio
 
@@ -62,8 +55,7 @@ info_player:
   hosts:
     info_player_1:
       ansible_host: 3910-PC-07.tu-ctrl
-      ansible_user: root
+      ansible_user: tu-studio
     info_player_2:
       ansible_host: 3910-PC-08.tu-ctrl
-      ansible_user: root
-      
+      ansible_user: tu-studio

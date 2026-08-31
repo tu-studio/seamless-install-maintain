@@ -30,7 +30,7 @@
       ansible.builtin.command:
         argv:
           - ln
-          - "-s"
+          - "-sf"
           - "{{ archive_dir }}/{{plugin_folder_name}}/{{ item }}"
           - "{{vst_dir}}"
       loop: ["SeamLess\ Client.vst3", "SeamLess\ Main.vst3"]

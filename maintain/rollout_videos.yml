@@ -4,7 +4,7 @@
   gather_facts: false
   vars:
     project_source: /home/leto/ak/seamless/hufo_videos/videos
-    target_content_dir: /home/kiosk/content/
+    target_content_dir: /home/tu-studio/content/
     video_id: "{{ inventory_hostname[-1] }}"
   tasks:
     # - name: "Copy Pagtatahip onto the server"
@@ -24,13 +24,13 @@
     #     mode: "u=rwx,g=rwx,o=rx"
     #   loop: ["full", "part_1", "part_2", "part_3"]
 
-    - name: "Copy Metamorphosis onto the server"
-      copy:
-        src: "{{ project_source }}pune_metamorphosis/compressed/Pune_Metamorphosis_HF-0{{ inventory_hostname[-1] }}.mp4"
-        dest: "{{ target_content_dir  }}"
-        owner: kiosk
-        group: avm
-        mode: "u=rwx,g=rwx,o=rx"
+    # - name: "Copy Metamorphosis onto the server"
+    #   copy:
+    #     src: "{{ project_source }}pune_metamorphosis/compressed/Pune_Metamorphosis_HF-0{{ inventory_hostname[-1] }}.mp4"
+    #     dest: "{{ target_content_dir  }}"
+    #     owner: kiosk
+    #     group: avm
+    #     mode: "u=rwx,g=rwx,o=rx"
 
     # - name: "Copy Transformation onto the server"
     #   copy:
@@ -54,6 +54,14 @@
     #     owner: kiosk
     #     group: avm
     #     mode: "u=rwx,g=rx,o=rx"
+
+    - name: "Copy fuga onto the server"
+      copy:
+        src: "{{ project_source }}/fuga/fuga_{{ inventory_hostname[-1] }}.mov"
+        dest: "{{ target_content_dir  }}"
+        owner: tu-studio
+        group: avm
+        mode: "u=rwx,g=rx,o=rx"
 
     - name: "Copy playlist.txt"
       ansible.builtin.template:

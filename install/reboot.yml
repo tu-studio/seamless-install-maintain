@@ -1,6 +1,6 @@
 ---
 - name: Reboot all pcs
-  hosts: [renderer, player]
+  hosts: [all]
   gather_facts: false
   become: true
   vars_files:
