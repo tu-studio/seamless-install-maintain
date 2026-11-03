@@ -21,3 +21,20 @@
         state: present
         group: shutdown
         commands: [/sbin/shutdown, /sbin/reboot, /sbin/poweroff]
+    - name: Put sudo in front of shutdown in humboldt-probe
+      ansible.builtin.lineinfile:
+        backrefs: true
+        state: present
+        path: /home/tu-studio/humboldt_probe/src/methods/__init__.py
+        regexp: '^(\s*)result = os\.system\(''shutdown now''\)$'
+        line: '\1result = os.system(''sudo shutdown now'')'
+      become: true
+    - name: Put sudo in front of reboot in humboldt-probe
+      ansible.builtin.lineinfile:
+        backrefs: true
+        state: present
+        path: /home/tu-studio/humboldt_probe/src/methods/__init__.py
+        regexp: '^(\s*)result = os\.system\(''reboot now''\)$'
+        line: '\1result = os.system(''sudo reboot now'')'
+      become: true
+
