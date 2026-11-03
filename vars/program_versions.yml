@@ -7,6 +7,7 @@ wonder_version: main
 showcontrol_version: main
 iem_plugins_version: master
 seamless_plugins_version: 1.0.0
+video_player_version: main
 
 # REAPER install needs the archive_name and the download url
 reaper_archive_name: reaper739_linux_x86_64.tar.xz
