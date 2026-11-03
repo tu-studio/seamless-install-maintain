@@ -1,11 +1,28 @@
 # single use for migrating from kiosk to tu-studio
 ---
-- name: migrate-videoplayer
-  hosts: [ video_player_3, video_player_4, video_player_5, video_player_6]
+- name: migrate-info
+
+  hosts: [video_player_1, video_player_2, video_player_3, video_player_4, video_player_5, video_player_6]
+
   become: true
   vars_files:
     - ../vars/vault.yml
   tasks:
+    # COPY ALL RELEVANT FOLDERS
+    - name: Copy content folder from kiosk to tu-studio
+      ansible.builtin.copy:
+        src: /home/kiosk/content/
+        dest: /home/tu-studio/content/
+        remote_src: true
+        owner: tu-studio
+        group: avm
+        mode: '0755'
+    - name: Ensure correct ownership on content recursively
+      ansible.builtin.file:
+        path: /home/tu-studio/content
+        owner: tu-studio
+        group: avm
+        recurse: true
 
     - name: Copy entire .config folder from kiosk to tu-studio
       ansible.builtin.copy:
@@ -22,42 +39,56 @@
         group: avm
         recurse: true
 
-    - name: Copy mpv config folder from kiosk to tu-studio
+    - name: Copy probe folder from kiosk to tu-studio
       ansible.builtin.copy:
-        src: /home/kiosk/.config/mpv/
-        dest: /home/tu-studio/.config/mpv/
+        src: /home/kiosk/humboldt_probe/
+        dest: /home/tu-studio/humboldt_probe/
         remote_src: true
         owner: tu-studio
         group: avm
         mode: '0755'
-    - name: Ensure correct ownership on mpv config recursively
+    - name: Ensure correct ownership on humboldt_probe recursively
       ansible.builtin.file:
-        path: /home/tu-studio/.config/mpv
+        path: /home/tu-studio/humboldt_probe
         owner: tu-studio
         group: avm
         recurse: true
-    - name: Update include path in mpv config
+
+
+    # MPV
+    - name: Ensure correct ownership of mpv socket
+      ansible.builtin.file:
+        path: /tmp/mpvsocket
+        owner: tu-studio
+        group: avm
+    # # no longer necessary, because video system has been migrated
+    # - name: Update include path in mpv config
+    #   ansible.builtin.lineinfile:
+    #     path: /home/tu-studio/.config/mpv/mpv.conf
+    #     regexp: '^include=/home/kiosk/content/mpv.conf'
+    #     line: 'include=/home/tu-studio/content/mpv.conf'
+    #     state: present
+    # - name: Rename user in mpv service
+    #   ansible.builtin.lineinfile:
+    #     state: present
+    #     path: /etc/systemd/system/mpv-udp-bridge.service
+    #     regexp: '^User=kiosk'
+    #     line: 'User=tu-studio'
+
+
+    # PROBE
+    - name: Rename user in probe ExecStart
+      ansible.builtin.shell:
+        cmd: "sed -i '/^ExecStart=/s/kiosk/tu-studio/g' /etc/systemd/system/humboldt-probe.service"
+    - name: Rename user in probe service
       ansible.builtin.lineinfile:
-        path: /home/tu-studio/.config/mpv/mpv.conf
-        regexp: '^include=/home/kiosk/content/mpv.conf'
-        line: 'include=/home/tu-studio/content/mpv.conf'
         state: present
+        path: /etc/systemd/system/humboldt-probe.service
+        regexp: '^User=kiosk'
+        line: 'User=tu-studio'
 
-    - name: Copy content folder from kiosk to tu-studio
-      ansible.builtin.copy:
-        src: /home/kiosk/content/
-        dest: /home/tu-studio/content/
-        remote_src: true
-        owner: tu-studio
-        group: avm
-        mode: '0755'
-    - name: Ensure correct ownership on content recursively
-      ansible.builtin.file:
-        path: /home/tu-studio/content
-        owner: tu-studio
-        group: avm
-        recurse: true
 
+    # AUTOSTART
     - name: Rename kiosk startup desktop file to tu-studio
       ansible.builtin.command:
         cmd: mv /home/tu-studio/.config/autostart/kiosk-startup.desktop /home/tu-studio/.config/autostart/tu-studio-startup.desktop
@@ -69,6 +100,7 @@
         owner: tu-studio
         group: avm
         recurse: true
+
     - name: Update Name in autostart desktop file
       ansible.builtin.lineinfile:
         path: /home/tu-studio/.config/autostart/tu-studio-startup.desktop
@@ -82,18 +114,17 @@
         line: 'Exec=/home/tu-studio/content/startup.sh'
         state: present
 
-    # Alternative direct shell approach to safely adjust the groups:
+
+    # AUTOLOGIN
     - name: Remove kiosk from autologin group via gpasswd
       ansible.builtin.command:
         cmd: gpasswd -d kiosk autologin
       failed_when: false # Prevents failing if kiosk wasn't in the group to begin with
-
     - name: Add tu-studio to autologin group
       ansible.builtin.user:
         name: tu-studio
         groups: autologin
         append: true
-
 
     - name: Set autologin user in main LightDM config
       ansible.builtin.lineinfile:
@@ -110,37 +141,17 @@
         insertafter: '^\[Seat:\*\]'
         state: present
 
-    - name: Rename user in service
-      ansible.builtin.lineinfile:
-        state: present
-        path: /etc/systemd/system/mpv-udp-bridge.service
-        regexp: '^User=kiosk'
-        line: 'User=tu-studio'
-      notify: Restart mpv service
+    # RELOAD ETC
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
 
-    # - name: Remove kiosk mpv config directory
-    #   ansible.builtin.file:
-    #     path: /home/kiosk/.config
-    #     state: absent
-    # - name: Remove kiosk content directory
-    #   ansible.builtin.file:
-    #     path: /home/kiosk/content
-    #     state: absent
-    # - name: Remove tu-studio autostart directory if it exists
-    #   ansible.builtin.file:
-    #     path: /home/tu-studio/.config/autostart
-    #     state: absent
-    # - name: Remove kiosk autostart directory
-    #   ansible.builtin.file:
-    #     path: /home/kiosk/.config/autostart
-    #     state: absent
-
-
-  handlers:
     - name: Restart mpv service
       ansible.builtin.systemd:
         name: mpv-udp-bridge.service
         state: restarted
-        daemon_reload: true
-        enabled: true
-        scope: system
+
+    - name: Restart humboldt-probe service
+      ansible.builtin.systemd:
+        name: humboldt-probe.service
+        state: restarted
