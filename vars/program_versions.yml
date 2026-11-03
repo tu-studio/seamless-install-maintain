@@ -5,7 +5,7 @@ jack_connection_manager_version: main
 osc_kreuz_version: main
 wonder_version: main
 showcontrol_version: main
-iem_plugins_version: 1.14.3
+iem_plugins_version: master
 seamless_plugins_version: 1.0.0
 
 # REAPER install needs the archive_name and the download url
